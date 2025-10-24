@@ -8,9 +8,10 @@ import (
 )
 
 type Config struct {
-	TelegramBotToken string
-	TelegramUrl      string
-	Env              string
+	TelegramBotToken      string
+	TelegramUrl           string
+	Env                   string
+	TeleGramClientTimeout string
 }
 
 var (
@@ -18,14 +19,15 @@ var (
 	once     sync.Once
 )
 
-func Get() *Config {
+func GetConfigs() *Config {
 	once.Do(func() {
 		_ = godotenv.Load()
 
 		instance = &Config{
-			TelegramBotToken: os.Getenv("TELEGRAM_BOT_TOKEN"),
-			TelegramUrl:      os.Getenv("TELEGRAM_URL"),
-			Env:              os.Getenv("ENV"),
+			TelegramBotToken:      os.Getenv("TELEGRAM_BOT_TOKEN"),
+			TelegramUrl:           os.Getenv("TELEGRAM_URL"),
+			Env:                   os.Getenv("ENV"),
+			TeleGramClientTimeout: os.Getenv("TELEGRAM_CLIENT_TIMEOUT"),
 		}
 	})
 	return instance

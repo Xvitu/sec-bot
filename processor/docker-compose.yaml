@@ -9,3 +9,13 @@ services:
     volumes:
       - .:/sec-bot
     restart: unless-stopped
+    depends_on:
+      - dynamodb
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -inMemory"
+    volumes:
+      - ./data/dynamodb:/home/dynamodblocal/data

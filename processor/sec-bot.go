@@ -17,7 +17,7 @@ import (
 
 func main() {
 
-	// migrations
+	// todo - rever migrations
 	ctx := context.TODO()
 	dynamoClient, _ := dynamo.NewClient(context.TODO())
 	err := dynamo.EnsureTableExists(ctx, dynamoClient, "Chats")

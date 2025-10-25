@@ -33,7 +33,7 @@ func NewChatUpdateProcessor(
 func (u *ChatUpdateProcessor) Run(chatUpdate dto.Chat) (*domainEntity.Chat, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	persistedChat, chatRepoError := u.chatRepository.FindByID(ctx, chatUpdate.ExternalUserId)
+	persistedChat, chatRepoError := u.chatRepository.FindByExternalId(ctx, chatUpdate.ExternalUserId)
 
 	if chatRepoError != nil {
 		return nil, chatRepoError

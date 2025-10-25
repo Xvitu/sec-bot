@@ -19,7 +19,7 @@ type ChatRepository struct {
 func NewChatRepository(client *dynamodb.Client) *ChatRepository {
 	return &ChatRepository{
 		client:    client,
-		tableName: "chats",
+		tableName: "Chats",
 	}
 }
 

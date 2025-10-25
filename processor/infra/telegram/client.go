@@ -17,14 +17,14 @@ type Client struct {
 	client  *http.Client
 }
 
-func NewTelegramClient(cfg env.Config) *Client {
+func NewTelegramClient(cfg *env.Config) *Client {
 	return &Client{
 		baseURL: fmt.Sprintf("%s/bot%s", strings.TrimRight(cfg.TelegramUrl, "/"), cfg.TelegramBotToken),
 		client:  &http.Client{Timeout: getTimeout(cfg)},
 	}
 }
 
-func getTimeout(config env.Config) time.Duration {
+func getTimeout(config *env.Config) time.Duration {
 	timeout, err := strconv.Atoi(config.TeleGramClientTimeout)
 
 	if err != nil || timeout <= 0 {

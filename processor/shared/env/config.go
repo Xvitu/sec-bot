@@ -12,6 +12,8 @@ type Config struct {
 	TelegramUrl           string
 	Env                   string
 	TeleGramClientTimeout string
+	DynamoDBEndpoint      string
+	AwsRegion             string
 }
 
 var (
@@ -28,6 +30,8 @@ func Get() *Config {
 			TelegramUrl:           os.Getenv("TELEGRAM_URL"),
 			Env:                   os.Getenv("ENV"),
 			TeleGramClientTimeout: os.Getenv("TELEGRAM_CLIENT_TIMEOUT"),
+			DynamoDBEndpoint:      os.Getenv("DYNAMODB_ENDPOINT"),
+			AwsRegion:             os.Getenv("AWS_REGION"),
 		}
 	})
 	return instance

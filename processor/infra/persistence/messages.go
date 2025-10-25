@@ -1,0 +1,136 @@
+package persistence
+
+var start = map[string]string{
+	"greetings": "Oi! Sou o SecBot, como posso te ajudar hoje? 1 - Duvidas; 2 - Quiz; 3 - Dicas; 4 - Infos Sobre golpes",
+}
+
+var faqMenu = map[string]string{
+	"principal": "Aqui esta, uma lista de coisas que posso tirar duvidas:" +
+		"1 - O que é phishing?" +
+		"2 - Para que serve um firewall?" +
+		"3 - Qual a diferença entre HTTP e HTTPS?" +
+		"4 - O que é um malware?" +
+		"5 - O que é autenticação de dois fatores (2FA)?" +
+		"6 - Qual é a diferença entre criptografia simétrica e assimétrica?" +
+		"7 - O que é um ataque DDoS?" +
+		"8 - Para que serve o VPN?" +
+		"9 - O que significa SQL Injection e como prevenir?" +
+		"10 - O que é engenharia social?" +
+		"11 - Voltar",
+}
+
+var faqAnswers = map[string]string{
+	// Básico
+	"faq_1": "É um ataque de engenharia social para roubar dados, como senhas ou informações financeiras.",
+	"faq_2": "Protege a rede controlando o tráfego de entrada e saída, bloqueando acessos não autorizados.",
+	"faq_3": "HTTPS é a versão segura do HTTP, usando criptografia TLS/SSL para proteger os dados transmitidos.",
+	"faq_4": "É um software malicioso criado para danificar ou explorar sistemas, como vírus, worms ou trojans.",
+	"faq_5": "Um método que exige duas formas de verificação para acessar uma conta, aumentando a segurança.",
+
+	// Intermediário
+	"faq_6":  "Simétrica usa a mesma chave para criptografar e descriptografar; assimétrica usa par de chaves (pública e privada).",
+	"faq_7":  "Ataque distribuído que sobrecarrega um sistema ou rede com tráfego, tornando-o indisponível.",
+	"faq_8":  "Cria uma conexão segura e criptografada entre o usuário e a rede, protegendo dados em trânsito.",
+	"faq_9":  "É um ataque que explora vulnerabilidades em consultas SQL. Prevenção: usar queries parametrizadas e validação de inputs.",
+	"faq_10": "Técnicas de manipulação psicológica para induzir pessoas a divulgar informações confidenciais.",
+}
+
+var securityTips = map[string]string{
+	"tip_1":  "Crie senhas longas e complexas, misturando letras, números e símbolos. Evite reutilizar senhas.",
+	"tip_2":  "Sempre que possível, ative a autenticação de dois fatores para proteger suas contas.",
+	"tip_3":  "Mantenha sistemas, aplicativos e antivírus sempre atualizados para corrigir vulnerabilidades.",
+	"tip_5":  "Não clique em links desconhecidos ou suspeitos em emails, mensagens ou sites.",
+	"tip_6":  "Redes públicas podem ser inseguras. Use VPN para proteger sua conexão.",
+	"tip_8":  "Faça backups periódicos de arquivos importantes para prevenir perda de dados.",
+	"tip_9":  "Ao acessar sites, confira se a URL usa HTTPS e se o certificado é válido.",
+	"tip_10": "Não abra anexos de emails ou mensagens de fontes desconhecidas.",
+	"tip_11": "Instale e mantenha um antivírus atualizado para detectar ameaças.",
+	"tip_12": "Evite divulgar informações pessoais sensíveis que podem ser usadas em ataques de engenharia social.",
+}
+
+var knownScams = map[string]string{
+	"scam_1":  "Golpe que tenta enganar a vítima para obter informações sensíveis, como senhas ou dados bancários, geralmente por email ou mensagem falsa.",
+	"scam_2":  "Golpe por telefone (voice phishing), onde o golpista se passa por uma empresa ou autoridade para obter dados confidenciais.",
+	"scam_3":  "Golpe via SMS, com links ou mensagens fraudulentas que induzem a vítima a fornecer informações pessoais.",
+	"scam_4":  "O golpista se passa por suporte de TI ou empresa de tecnologia e convence a vítima a instalar software malicioso ou pagar por serviços inexistentes.",
+	"scam_5":  "O golpista envia boletos ou cobranças falsas, muitas vezes parecendo legítimos, para receber pagamento indevido.",
+	"scam_6":  "O criminoso engana a vítima para obter o código de verificação e assumir o controle da conta do WhatsApp.",
+	"scam_7":  "O golpista envia comprovantes falsos ou mensagens fraudulentas pedindo transferências via PIX.",
+	"scam_8":  "Loja falsa ou anúncios fraudulentos que pedem pagamento antecipado e não entregam o produto.",
+	"scam_9":  "A vítima é avisada de que ganhou um prêmio e precisa pagar taxas ou informar dados pessoais para receber.",
+	"scam_10": "Criminosos criam perfis falsos em redes sociais ou apps de relacionamento para enganar emocionalmente e pedir dinheiro.",
+}
+
+var cyberQuiz = map[string]string{
+	"quiz_1":  "O que é phishing?\n1. Um tipo de malware\n2. Ataque de engenharia social\n3. Criptografia de dados",
+	"quiz_2":  "Para que serve um firewall?\n1. Protege redes\n2. Acelera conexão\n3. Cria senhas",
+	"quiz_3":  "Qual a diferença entre HTTP e HTTPS?\n1. HTTPS é seguro\n2. HTTP é seguro\n3. Não há diferença",
+	"quiz_4":  "O que é malware?\n1. Software malicioso\n2. Atualização de sistema\n3. Firewall",
+	"quiz_5":  "O que é autenticação de dois fatores?\n1. Senha longa\n2. Usa duas formas de verificação\n3. VPN",
+	"quiz_6":  "Criptografia simétrica vs assimétrica?\n1. Somente pública\n2. Somente privada\n3. Mesma chave vs par de chaves",
+	"quiz_7":  "O que é ataque DDoS?\n1. Sobrecarrega sistema\n2. Criptografa dados\n3. Instala malware",
+	"quiz_8":  "Para que serve uma VPN?\n1. Atualização de firewall\n2. Conexão segura\n3. Velocidade de rede",
+	"quiz_9":  "O que é SQL Injection?\n1. Tipo de firewall\n2. Criptografia de banco\n3. Ataque a consultas SQL",
+	"quiz_10": "O que é engenharia social?\n1. Manipulação psicológica\n2. Criptografia\n3. Malware",
+	"quiz_11": "O que é hash?\n1. Firewall\n2. Resumo de dados\n3. Senha padrão",
+	"quiz_12": "O que são vulnerabilidades zero-day?\n1. Atualizações seguras\n2. Ataques antigos\n3. Falhas sem correção",
+	"quiz_13": "XSS vs CSRF?\n1. XSS injeta scripts, CSRF força ações\n2. Ambos injetam SQL\n3. São tipos de malware",
+	"quiz_14": "O que é certificado digital?\n1. Senha de banco\n2. Valida identidade online\n3. VPN",
+	"quiz_15": "O que é Defense in Depth?\n1. Criptografia simétrica\n2. Firewall único\n3. Segurança em camadas",
+	"quiz_16": "O que é Vishing?\n1. Golpe por telefone\n2. Ataque de email\n3. Roubo de cartão",
+	"quiz_17": "O que é Smishing?\n1. Criptografia\n2. Golpe por SMS\n3. Firewall móvel",
+	"quiz_18": "O que é o Golpe do falso suporte técnico?\n1. Protege sistema\n2. Atualiza antivírus\n3. Engana usuário para instalar malware",
+	"quiz_19": "O que é o Golpe do boleto falso?\n1. Boleto fraudulento\n2. Boleto legítimo\n3. VPN gratuita",
+	"quiz_20": "O que é o Golpe do prêmio falso?\n1. Prêmio real\n2. Promessa de prêmio falso\n3. Atualização de software",
+}
+
+var cyberQuizAnswers = map[string]string{
+	"quiz_1":  "2",
+	"quiz_2":  "1",
+	"quiz_3":  "1",
+	"quiz_4":  "1",
+	"quiz_5":  "2",
+	"quiz_6":  "3",
+	"quiz_7":  "1",
+	"quiz_8":  "2",
+	"quiz_9":  "3",
+	"quiz_10": "1",
+	"quiz_11": "2",
+	"quiz_12": "3",
+	"quiz_13": "1",
+	"quiz_14": "2",
+	"quiz_15": "3",
+	"quiz_16": "1",
+	"quiz_17": "2",
+	"quiz_18": "3",
+	"quiz_19": "1",
+	"quiz_20": "2",
+}
+
+var cyberQuizFeedbacks = map[string]string{
+	"error":   "Que pena, a resposta nao esta correta mas aqui vai uma breve explicacao sobre o assunto: ",
+	"sucesso": "Certa resposta! Muito bem!",
+}
+
+var cyberQuizExplanations = map[string]string{
+	"quiz_1":  "Phishing é um ataque de engenharia social onde o invasor tenta enganar a vítima para obter informações sensíveis, como senhas ou dados bancários.",
+	"quiz_2":  "Um firewall protege redes filtrando tráfego indesejado e prevenindo acessos não autorizados.",
+	"quiz_3":  "HTTPS é a versão segura do HTTP, usando criptografia para proteger a comunicação entre cliente e servidor.",
+	"quiz_4":  "Malware é qualquer software projetado para prejudicar ou explorar sistemas, como vírus, worms e trojans.",
+	"quiz_5":  "Autenticação de dois fatores exige duas formas de verificação para aumentar a segurança de uma conta.",
+	"quiz_6":  "Criptografia simétrica usa a mesma chave para cifrar e decifrar, enquanto a assimétrica usa um par de chaves (pública e privada).",
+	"quiz_7":  "Um ataque DDoS sobrecarrega servidores ou redes com tráfego excessivo, tornando serviços indisponíveis.",
+	"quiz_8":  "Uma VPN cria uma conexão segura e criptografada entre o usuário e a rede, protegendo dados em trânsito.",
+	"quiz_9":  "SQL Injection é um ataque onde comandos SQL maliciosos são inseridos em consultas, podendo comprometer bancos de dados.",
+	"quiz_10": "Engenharia social envolve manipulação psicológica para induzir pessoas a revelar informações ou executar ações inseguras.",
+	"quiz_11": "Hash é um resumo único de dados, usado para verificar integridade sem expor a informação original.",
+	"quiz_12": "Vulnerabilidades zero-day são falhas de segurança recém-descobertas e sem correção disponível, exploráveis por atacantes.",
+	"quiz_13": "XSS injeta scripts maliciosos em páginas web, enquanto CSRF força usuários a realizar ações indesejadas em sites que confiam neles.",
+	"quiz_14": "Certificado digital valida a identidade online de um usuário, site ou organização, garantindo comunicação segura.",
+	"quiz_15": "Defense in Depth é uma estratégia de segurança em camadas, protegendo sistemas com múltiplas barreiras de defesa.",
+	"quiz_16": "Vishing é um golpe por telefone, onde o invasor tenta enganar a vítima para obter dados confidenciais.",
+	"quiz_17": "Smishing é um golpe via SMS, enviando mensagens maliciosas para induzir o usuário a revelar informações.",
+	"quiz_18": "O golpe do falso suporte técnico engana usuários, fazendo-os instalar malware ou fornecer acesso remoto ao invasor.",
+	"quiz_19": "Golpe do boleto falso envia boletos fraudulentos, fazendo a vítima pagar valores indevidos.",
+	"quiz_20": "Golpe do prêmio falso promete prêmios inexistentes para enganar vítimas a fornecer informações pessoais ou dinheiro.",
+}

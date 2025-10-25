@@ -1,6 +1,6 @@
 package request
 
-type TeleGramRequest interface {
+type TelegramRequest interface {
 	Endpoint() string
 	Body() ([]byte, error)
 }

@@ -34,7 +34,7 @@ func getTimeout(config shared.Config) time.Duration {
 	return time.Duration(timeout) * time.Second
 }
 
-func (t *Client) Post(request request.TeleGramRequest) ([]byte, error) {
+func (t *Client) Post(request request.TelegramRequest) ([]byte, error) {
 	endpoint := t.BaseURL + request.Endpoint()
 
 	jsonBody, err := request.Body()

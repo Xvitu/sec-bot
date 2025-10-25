@@ -17,7 +17,7 @@ func NewSendMessageRequest(chatId int64, text string) SendMessageRequest {
 }
 
 func (r SendMessageRequest) Endpoint() string {
-	return "sendMessage"
+	return "/sendMessage"
 }
 
 func (r SendMessageRequest) Body() ([]byte, error) {

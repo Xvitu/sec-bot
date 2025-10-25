@@ -23,6 +23,7 @@ func FromDomain(chat domainEntity.Chat) Chat {
 		CreatedAt:     chat.CreatedAt,
 		UpdatedAt:     chat.UpdatedAt,
 		Step:          chat.Step,
+		Origin:        chat.Origin,
 	}
 }
 
@@ -35,5 +36,6 @@ func ToDomain(chat Chat) domainEntity.Chat {
 		CreatedAt:     chat.CreatedAt,
 		UpdatedAt:     chat.UpdatedAt,
 		Step:          chat.Step,
+		Origin:        chat.Origin,
 	}
 }

@@ -1,6 +1,7 @@
 package telegram
 
 import (
+	"strconv"
 	"xvitu/sec-bot/infra/telegram/request"
 	"xvitu/sec-bot/infra/telegram/response"
 	"xvitu/sec-bot/shared/json"
@@ -14,8 +15,9 @@ func NewGateway(client *Client) *Gateway {
 	return &Gateway{client: client}
 }
 
-func (g *Gateway) SendMessage(chatID int64, text string) (*response.SendMessageResponse, error) {
-	sendMessageRequest := request.NewSendMessageRequest(chatID, text)
+func (g *Gateway) SendMessage(chatID string, text string) (*response.SendMessageResponse, error) {
+	intChatId, _ := strconv.ParseInt(chatID, 10, 64)
+	sendMessageRequest := request.NewSendMessageRequest(intChatId, text)
 	responseBytes, postErr := g.client.Post(sendMessageRequest)
 
 	if postErr != nil {

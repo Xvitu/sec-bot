@@ -13,14 +13,14 @@ import (
 )
 
 type Client struct {
-	BaseURL string
-	Client  *http.Client
+	baseURL string
+	client  *http.Client
 }
 
 func NewTelegramClient(cfg env.Config) *Client {
 	return &Client{
-		BaseURL: fmt.Sprintf("%s/bot%s", strings.TrimRight(cfg.TelegramUrl, "/"), cfg.TelegramBotToken),
-		Client:  &http.Client{Timeout: getTimeout(cfg)},
+		baseURL: fmt.Sprintf("%s/bot%s", strings.TrimRight(cfg.TelegramUrl, "/"), cfg.TelegramBotToken),
+		client:  &http.Client{Timeout: getTimeout(cfg)},
 	}
 }
 
@@ -35,14 +35,14 @@ func getTimeout(config env.Config) time.Duration {
 }
 
 func (t *Client) Post(request request.TelegramRequest) ([]byte, error) {
-	endpoint := t.BaseURL + request.Endpoint()
+	endpoint := t.baseURL + request.Endpoint()
 
 	jsonBody, err := request.Body()
 	if err != nil {
 		return nil, fmt.Errorf("erro ao serializar body: %w", err)
 	}
 
-	resp, err := t.Client.Post(endpoint, "application/json", bytes.NewBuffer(jsonBody))
+	resp, err := t.client.Post(endpoint, "application/json", bytes.NewBuffer(jsonBody))
 
 	return handleResponse(resp, err)
 }

@@ -7,16 +7,16 @@ import (
 )
 
 type Gateway struct {
-	Client *Client
+	client *Client
 }
 
 func NewGateway(client *Client) *Gateway {
-	return &Gateway{Client: client}
+	return &Gateway{client: client}
 }
 
 func (g *Gateway) SendMessage(chatID int64, text string) (*response.SendMessageResponse, error) {
 	sendMessageRequest := request.NewSendMessageRequest(chatID, text)
-	responseBytes, postErr := g.Client.Post(sendMessageRequest)
+	responseBytes, postErr := g.client.Post(sendMessageRequest)
 
 	if postErr != nil {
 		return nil, postErr

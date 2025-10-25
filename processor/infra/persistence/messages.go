@@ -5,7 +5,7 @@ var start = map[string]string{
 }
 
 var faqMenu = map[string]string{
-	"principal": "Aqui esta, uma lista de coisas que posso tirar duvidas:" +
+	"start": "Aqui esta, uma lista de coisas que posso tirar duvidas:" +
 		"1 - O que é phishing?" +
 		"2 - Para que serve um firewall?" +
 		"3 - Qual a diferença entre HTTP e HTTPS?" +
@@ -85,52 +85,52 @@ var cyberQuiz = map[string]string{
 }
 
 var cyberQuizAnswers = map[string]string{
-	"quiz_1":  "2",
-	"quiz_2":  "1",
-	"quiz_3":  "1",
-	"quiz_4":  "1",
-	"quiz_5":  "2",
-	"quiz_6":  "3",
-	"quiz_7":  "1",
-	"quiz_8":  "2",
-	"quiz_9":  "3",
-	"quiz_10": "1",
-	"quiz_11": "2",
-	"quiz_12": "3",
-	"quiz_13": "1",
-	"quiz_14": "2",
-	"quiz_15": "3",
-	"quiz_16": "1",
-	"quiz_17": "2",
-	"quiz_18": "3",
-	"quiz_19": "1",
-	"quiz_20": "2",
+	"quiz_answer_1":  "2",
+	"quiz_answer_2":  "1",
+	"quiz_answer_3":  "1",
+	"quiz_answer_4":  "1",
+	"quiz_answer_5":  "2",
+	"quiz_answer_6":  "3",
+	"quiz_answer_7":  "1",
+	"quiz_answer_8":  "2",
+	"quiz_answer_9":  "3",
+	"quiz_answer_10": "1",
+	"quiz_answer_11": "2",
+	"quiz_answer_12": "3",
+	"quiz_answer_13": "1",
+	"quiz_answer_14": "2",
+	"quiz_answer_15": "3",
+	"quiz_answer_16": "1",
+	"quiz_answer_17": "2",
+	"quiz_answer_18": "3",
+	"quiz_answer_19": "1",
+	"quiz_answer_20": "2",
 }
 
 var cyberQuizFeedbacks = map[string]string{
-	"error":   "Que pena, a resposta nao esta correta mas aqui vai uma breve explicacao sobre o assunto: ",
-	"sucesso": "Certa resposta! Muito bem!",
+	"quiz_error":   "Que pena, a resposta nao esta correta mas aqui vai uma breve explicacao sobre o assunto: ",
+	"quiz_success": "Certa resposta! Muito bem!",
 }
 
 var cyberQuizExplanations = map[string]string{
-	"quiz_1":  "Phishing é um ataque de engenharia social onde o invasor tenta enganar a vítima para obter informações sensíveis, como senhas ou dados bancários.",
-	"quiz_2":  "Um firewall protege redes filtrando tráfego indesejado e prevenindo acessos não autorizados.",
-	"quiz_3":  "HTTPS é a versão segura do HTTP, usando criptografia para proteger a comunicação entre cliente e servidor.",
-	"quiz_4":  "Malware é qualquer software projetado para prejudicar ou explorar sistemas, como vírus, worms e trojans.",
-	"quiz_5":  "Autenticação de dois fatores exige duas formas de verificação para aumentar a segurança de uma conta.",
-	"quiz_6":  "Criptografia simétrica usa a mesma chave para cifrar e decifrar, enquanto a assimétrica usa um par de chaves (pública e privada).",
-	"quiz_7":  "Um ataque DDoS sobrecarrega servidores ou redes com tráfego excessivo, tornando serviços indisponíveis.",
-	"quiz_8":  "Uma VPN cria uma conexão segura e criptografada entre o usuário e a rede, protegendo dados em trânsito.",
-	"quiz_9":  "SQL Injection é um ataque onde comandos SQL maliciosos são inseridos em consultas, podendo comprometer bancos de dados.",
-	"quiz_10": "Engenharia social envolve manipulação psicológica para induzir pessoas a revelar informações ou executar ações inseguras.",
-	"quiz_11": "Hash é um resumo único de dados, usado para verificar integridade sem expor a informação original.",
-	"quiz_12": "Vulnerabilidades zero-day são falhas de segurança recém-descobertas e sem correção disponível, exploráveis por atacantes.",
-	"quiz_13": "XSS injeta scripts maliciosos em páginas web, enquanto CSRF força usuários a realizar ações indesejadas em sites que confiam neles.",
-	"quiz_14": "Certificado digital valida a identidade online de um usuário, site ou organização, garantindo comunicação segura.",
-	"quiz_15": "Defense in Depth é uma estratégia de segurança em camadas, protegendo sistemas com múltiplas barreiras de defesa.",
-	"quiz_16": "Vishing é um golpe por telefone, onde o invasor tenta enganar a vítima para obter dados confidenciais.",
-	"quiz_17": "Smishing é um golpe via SMS, enviando mensagens maliciosas para induzir o usuário a revelar informações.",
-	"quiz_18": "O golpe do falso suporte técnico engana usuários, fazendo-os instalar malware ou fornecer acesso remoto ao invasor.",
-	"quiz_19": "Golpe do boleto falso envia boletos fraudulentos, fazendo a vítima pagar valores indevidos.",
-	"quiz_20": "Golpe do prêmio falso promete prêmios inexistentes para enganar vítimas a fornecer informações pessoais ou dinheiro.",
+	"quiz_explanation_1":  "Phishing é um ataque de engenharia social onde o invasor tenta enganar a vítima para obter informações sensíveis, como senhas ou dados bancários.",
+	"quiz_explanation_2":  "Um firewall protege redes filtrando tráfego indesejado e prevenindo acessos não autorizados.",
+	"quiz_explanation_3":  "HTTPS é a versão segura do HTTP, usando criptografia para proteger a comunicação entre cliente e servidor.",
+	"quiz_explanation_4":  "Malware é qualquer software projetado para prejudicar ou explorar sistemas, como vírus, worms e trojans.",
+	"quiz_explanation_5":  "Autenticação de dois fatores exige duas formas de verificação para aumentar a segurança de uma conta.",
+	"quiz_explanation_6":  "Criptografia simétrica usa a mesma chave para cifrar e decifrar, enquanto a assimétrica usa um par de chaves (pública e privada).",
+	"quiz_explanation_7":  "Um ataque DDoS sobrecarrega servidores ou redes com tráfego excessivo, tornando serviços indisponíveis.",
+	"quiz_explanation_8":  "Uma VPN cria uma conexão segura e criptografada entre o usuário e a rede, protegendo dados em trânsito.",
+	"quiz_explanation_9":  "SQL Injection é um ataque onde comandos SQL maliciosos são inseridos em consultas, podendo comprometer bancos de dados.",
+	"quiz_explanation_10": "Engenharia social envolve manipulação psicológica para induzir pessoas a revelar informações ou executar ações inseguras.",
+	"quiz_explanation_11": "Hash é um resumo único de dados, usado para verificar integridade sem expor a informação original.",
+	"quiz_explanation_12": "Vulnerabilidades zero-day são falhas de segurança recém-descobertas e sem correção disponível, exploráveis por atacantes.",
+	"quiz_explanation_13": "XSS injeta scripts maliciosos em páginas web, enquanto CSRF força usuários a realizar ações indesejadas em sites que confiam neles.",
+	"quiz_explanation_14": "Certificado digital valida a identidade online de um usuário, site ou organização, garantindo comunicação segura.",
+	"quiz_explanation_15": "Defense in Depth é uma estratégia de segurança em camadas, protegendo sistemas com múltiplas barreiras de defesa.",
+	"quiz_explanation_16": "Vishing é um golpe por telefone, onde o invasor tenta enganar a vítima para obter dados confidenciais.",
+	"quiz_explanation_17": "Smishing é um golpe via SMS, enviando mensagens maliciosas para induzir o usuário a revelar informações.",
+	"quiz_explanation_18": "O golpe do falso suporte técnico engana usuários, fazendo-os instalar malware ou fornecer acesso remoto ao invasor.",
+	"quiz_explanation_19": "Golpe do boleto falso envia boletos fraudulentos, fazendo a vítima pagar valores indevidos.",
+	"quiz_explanation_20": "Golpe do prêmio falso promete prêmios inexistentes para enganar vítimas a fornecer informações pessoais ou dinheiro.",
 }

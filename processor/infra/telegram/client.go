@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 	"xvitu/sec-bot/infra/telegram/request"
-	"xvitu/sec-bot/shared"
+	"xvitu/sec-bot/shared/env"
 )
 
 type Client struct {
@@ -17,14 +17,14 @@ type Client struct {
 	Client  *http.Client
 }
 
-func NewTelegramClient(cfg shared.Config) *Client {
+func NewTelegramClient(cfg env.Config) *Client {
 	return &Client{
 		BaseURL: fmt.Sprintf("%s/bot%s", strings.TrimRight(cfg.TelegramUrl, "/"), cfg.TelegramBotToken),
 		Client:  &http.Client{Timeout: getTimeout(cfg)},
 	}
 }
 
-func getTimeout(config shared.Config) time.Duration {
+func getTimeout(config env.Config) time.Duration {
 	timeout, err := strconv.Atoi(config.TeleGramClientTimeout)
 
 	if err != nil || timeout <= 0 {

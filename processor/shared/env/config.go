@@ -1,4 +1,4 @@
-package shared
+package env
 
 import (
 	"os"
@@ -19,7 +19,7 @@ var (
 	once     sync.Once
 )
 
-func GetConfigs() *Config {
+func Get() *Config {
 	once.Do(func() {
 		_ = godotenv.Load()
 

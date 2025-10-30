@@ -4,7 +4,8 @@ import "xvitu/sec-bot/domain"
 
 var Messages = map[domain.Step]map[string]string{
 	domain.Start: {
-		"greetings": "Oi! Sou o SecBot, como posso te ajudar hoje? 1 - Duvidas; 2 - Quiz; 3 - Dicas; 4 - Infos Sobre golpes",
+		"greetings":      "Oi! Sou o SecBot, como posso te ajudar hoje? 1 - Duvidas; 2 - Quiz; 3 - Dicas; 4 - Infos Sobre golpes",
+		"invalid_option": "Nao entendi, pode repetir?",
 	},
 	domain.Faq: {
 		"faq_menu": "Aqui esta, uma lista de coisas que posso tirar duvidas:" +

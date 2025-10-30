@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 	"xvitu/sec-bot/domain"
@@ -18,15 +17,15 @@ import (
 func main() {
 
 	// todo - rever migrations
-	ctx := context.TODO()
-	dynamoClient, _ := dynamo.NewClient(context.TODO())
-	err := dynamo.EnsureTableExists(ctx, dynamoClient, "Chats")
-	if err != nil {
-		log.Fatal(err)
-	}
+	//ctx := context.TODO()
+	//dynamoClient, _ := dynamo.NewClient(context.TODO())
+	//err := dynamo.EnsureTableExists(ctx, dynamoClient, "Chats")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		dynamoCli, _ := dynamo.NewClient(context.TODO())
+		dynamoCli, _ := dynamo.NewClient(context.TODO(), env.Get())
 		telegramCli := telegram.NewTelegramClient(env.Get())
 		useCase := use_case.NewChatUpdateProcessor(
 			repository.NewChatRepository(dynamoCli),
@@ -38,7 +37,7 @@ func main() {
 			ExternalId:     "5470945009",
 			ExternalUserId: "5470945009",
 			SentAt:         time.Now().String(),
-			Message:        "Oi",
+			Message:        "1",
 			Origin:         domain.Telegram,
 		}
 

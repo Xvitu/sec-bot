@@ -64,7 +64,72 @@ func (u *ChatUpdateProcessor) Run(chatUpdate dto.Chat) (*domainEntity.Chat, erro
 		}
 
 		return &domainChat, nil
+	} else {
+		// todo - rever tudo qui
+		baseProcessor := BaseProcessor{
+			chatRepository:    u.chatRepository,
+			telegramGateway:   u.telegramGateway,
+			messageRepository: u.messageRepository,
+		}
+		baseProcessor.execute(chatUpdate, persistedChat)
 	}
 
 	return nil, nil
+}
+
+type BaseProcessor struct {
+	chatRepository    *repository.ChatRepository
+	telegramGateway   *telegram.Gateway
+	messageRepository *repository.MessageRepository
+}
+
+type MenuOptions struct {
+	option string
+}
+
+const (
+	Faq   = "1"
+	Quiz  = "2"
+	Tips  = "3"
+	Scams = "4"
+)
+
+// todo - rever classe e parse do step e menu opt
+func (p *BaseProcessor) execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
+
+	option := MenuOptions{chatUpdate.Message}
+	var replyMessage domainEntity.Message
+	var step domain.Step
+	var messageId string
+	switch option.option {
+	case Faq:
+		step = domain.Faq
+		messageId = "faq_menu"
+		break
+	case Quiz:
+		step = domain.Quiz
+		messageId = "faq_menu" // todo - random message
+		break
+	case Tips:
+		step = domain.Tips
+		messageId = "faq_menu" // todo - random message
+		break
+	case Scams:
+		step = domain.Scams
+		messageId = "faq_menu" // todo - random message
+		break
+	default:
+		step = domain.Start
+		messageId = "invalid_option"
+		break
+	}
+
+	replyMessage = p.messageRepository.GetByStepAndMessageId(step, messageId)
+
+	p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+
+	chat.Step = step
+	chat.LastMessageID = messageId
+	p.chatRepository.Save(context.Background(), *chat)
+	return chat, nil
 }

@@ -7,5 +7,5 @@ const (
 	Faq   Step = "faq"
 	Quiz  Step = "quiz"
 	Tips  Step = "tips"
-	Scams      = "scams"
+	Scams Step = "scams"
 )

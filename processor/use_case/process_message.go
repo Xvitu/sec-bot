@@ -71,7 +71,21 @@ func (u *ChatUpdateProcessor) Run(chatUpdate dto.Chat) (*domainEntity.Chat, erro
 			telegramGateway:   u.telegramGateway,
 			messageRepository: u.messageRepository,
 		}
-		baseProcessor.execute(chatUpdate, persistedChat)
+
+		faqProcessor := FaqProcessor{
+			chatRepository:    u.chatRepository,
+			telegramGateway:   u.telegramGateway,
+			messageRepository: u.messageRepository,
+		}
+		switch persistedChat.Step {
+		case domain.Start:
+			baseProcessor.execute(chatUpdate, persistedChat)
+			break
+		case domain.Faq:
+			faqProcessor.execute(chatUpdate, persistedChat)
+			break
+		}
+
 	}
 
 	return nil, nil
@@ -95,10 +109,11 @@ const (
 )
 
 // todo - rever classe e parse do step e menu opt
+// todo - implementar strategy
 func (p *BaseProcessor) execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 
 	option := MenuOptions{chatUpdate.Message}
-	var replyMessage domainEntity.Message
+	var replyMessage *domainEntity.Message
 	var step domain.Step
 	var messageId string
 	switch option.option {
@@ -130,6 +145,56 @@ func (p *BaseProcessor) execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*
 
 	chat.Step = step
 	chat.LastMessageID = messageId
+	p.chatRepository.Save(context.Background(), *chat)
+	return chat, nil
+}
+
+// todo - consts para id das mensgens?
+
+type FaqProcessor struct {
+	chatRepository    *repository.ChatRepository
+	telegramGateway   *telegram.Gateway
+	messageRepository *repository.MessageRepository
+}
+
+// todo - codigo duplicado
+func (p *FaqProcessor) execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
+	var replyMessage *domainEntity.Message
+	var step domain.Step
+	var messageId string
+
+	if chatUpdate.Message == "11" {
+		step = domain.Start
+		messageId = "greetings"
+		replyMessage = p.messageRepository.GetByStepAndMessageId(step, messageId)
+
+		p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+
+		chat.Step = step
+		chat.LastMessageID = messageId
+		p.chatRepository.Save(context.Background(), *chat)
+		return chat, nil
+	}
+
+	replyMessage = p.messageRepository.GetByStepAndMessageId(domain.Faq, "faq_"+chatUpdate.Message)
+
+	if replyMessage == nil {
+		step = domain.Faq
+		messageId = "invalid_option"
+
+		replyMessage = p.messageRepository.GetByStepAndMessageId(step, messageId)
+		p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+
+		chat.Step = step
+		chat.LastMessageID = messageId
+		p.chatRepository.Save(context.Background(), *chat)
+		return chat, nil
+	}
+
+	p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+
+	chat.Step = domain.Faq
+	chat.LastMessageID = replyMessage.Id
 	p.chatRepository.Save(context.Background(), *chat)
 	return chat, nil
 }

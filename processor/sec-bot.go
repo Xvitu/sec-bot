@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 	"xvitu/sec-bot/domain"
@@ -33,11 +35,24 @@ func main() {
 			&repository.MessageRepository{},
 		)
 
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "erro ao ler body", http.StatusBadRequest)
+			return
+		}
+
+		var data map[string]interface{}
+		if err := json.Unmarshal(body, &data); err != nil {
+			http.Error(w, "erro ao fazer parse do JSON", http.StatusBadRequest)
+			return
+		}
+		message, _ := data["message"].(string)
+
 		chatDto := dto.Chat{
 			ExternalId:     "5470945009",
 			ExternalUserId: "5470945009",
 			SentAt:         time.Now().String(),
-			Message:        "1",
+			Message:        message,
 			Origin:         domain.Telegram,
 		}
 

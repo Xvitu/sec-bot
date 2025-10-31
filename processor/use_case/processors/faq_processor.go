@@ -32,12 +32,22 @@ func NewFaqProcessor(
 
 func (p *FaqProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	if chatUpdate.Message == backMessageId {
-		return p.handleMessage(domain.Start, "greetings", chat)
+		return p.handleMessage(domain.MainMenu, "greetings", chat)
 	}
 
-	chat, chatError := p.handleMessage(domain.Faq, "faq_"+chatUpdate.Message, chat)
+	updatedChat, chatError := p.handleMessage(domain.Faq, "faq_"+chatUpdate.Message, chat)
 	if chatError != nil {
-		return p.handleMessage(domain.Faq, "invalid_option", chat)
+		return p.handleError("invalid_option", chat)
+	}
+
+	return updatedChat, nil
+}
+
+func (p *FaqProcessor) handleError(messageId string, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
+	replyMessage := p.messageRepository.GetByStepAndMessageId(domain.Error, messageId)
+	_, sendMessageError := p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+	if sendMessageError != nil {
+		return nil, fmt.Errorf("error while sending message: %s", sendMessageError)
 	}
 
 	return chat, nil

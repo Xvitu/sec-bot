@@ -2,6 +2,7 @@ package processors
 
 import (
 	"context"
+	"fmt"
 	"xvitu/sec-bot/domain"
 	domainEntity "xvitu/sec-bot/domain/entity"
 	"xvitu/sec-bot/entypoint/dto"
@@ -38,8 +39,6 @@ func NewMainMenuProcessor(
 	}
 }
 
-// todo - rever classe e parse do step e menu opt
-// todo - implementar strategy
 func (p *MainMenuProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	option := MenuOptions{chatUpdate.Message}
 	var replyMessage *domainEntity.Message
@@ -63,11 +62,10 @@ func (p *MainMenuProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat
 		messageId = "faq_menu" // todo - mudar para menu
 		break
 	default:
-		step = domain.Start
-		messageId = "invalid_option"
-		break
+		return p.handleError("invalid_option", chat)
 	}
 
+	// todo - essas linhas vao repetir mto, talvez criar algo abstrato?
 	replyMessage = p.messageRepository.GetByStepAndMessageId(step, messageId)
 
 	p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
@@ -75,5 +73,16 @@ func (p *MainMenuProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat
 	chat.Step = step
 	chat.LastMessageID = messageId
 	p.chatRepository.Save(context.Background(), *chat)
+	return chat, nil
+}
+
+// todo - helper? o codigo esta se repetindo
+func (p *MainMenuProcessor) handleError(messageId string, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
+	replyMessage := p.messageRepository.GetByStepAndMessageId(domain.Error, messageId)
+	_, sendMessageError := p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+	if sendMessageError != nil {
+		return nil, fmt.Errorf("error while sending message: %s", sendMessageError)
+	}
+
 	return chat, nil
 }

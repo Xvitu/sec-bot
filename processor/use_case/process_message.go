@@ -11,14 +11,14 @@ import (
 )
 
 type ChatUpdateHandler struct {
-	processors     map[domain.Step]processors.MessageProcessor
-	chatRepository repository.ChatRepositoryInterface
+	messageProcessors map[domain.Step]processors.MessageProcessor
+	chatRepository    repository.ChatRepositoryInterface
 }
 
-func NewChatUpdateHandler(processors map[domain.Step]processors.MessageProcessor, repositoryInterface repository.ChatRepositoryInterface) *ChatUpdateHandler {
+func NewChatUpdateHandler(messageProcessors map[domain.Step]processors.MessageProcessor, repositoryInterface repository.ChatRepositoryInterface) *ChatUpdateHandler {
 	return &ChatUpdateHandler{
-		processors:     processors,
-		chatRepository: repositoryInterface,
+		messageProcessors: messageProcessors,
+		chatRepository:    repositoryInterface,
 	}
 }
 
@@ -32,10 +32,10 @@ func (u *ChatUpdateHandler) Run(chatUpdate dto.Chat) (*domainEntity.Chat, error)
 	}
 
 	if persistedChat == nil {
-		return u.processors[domain.Start].Execute(chatUpdate, persistedChat)
+		return u.messageProcessors[domain.Start].Execute(chatUpdate, persistedChat)
 	}
 
-	processor := u.processors[persistedChat.Step]
+	processor := u.messageProcessors[persistedChat.Step]
 	return processor.Execute(chatUpdate, persistedChat)
 }
 

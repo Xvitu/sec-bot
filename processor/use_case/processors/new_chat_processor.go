@@ -31,7 +31,7 @@ func CreateNewChatProcessor(
 }
 
 func (p *NewChatProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
-	message := p.messageRepository.GetByStepAndMessageId(domain.Start, "greetings")
+	message := p.messageRepository.GetByStepAndMessageId(domain.MainMenu, "greetings")
 	_, sendMessageError := p.telegramGateway.SendMessage(chatUpdate.ExternalId, message.Text)
 
 	if sendMessageError != nil {
@@ -44,7 +44,7 @@ func (p *NewChatProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat)
 		UserId:        chatUpdate.ExternalUserId,
 		CreatedAt:     time.Now().String(),
 		UpdatedAt:     time.Now().String(),
-		Step:          domain.Start,
+		Step:          domain.MainMenu,
 		LastMessageID: message.Id,
 		Id:            uuid.New().String(),
 	}
@@ -55,5 +55,4 @@ func (p *NewChatProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat)
 	}
 
 	return &domainChat, nil
-
 }

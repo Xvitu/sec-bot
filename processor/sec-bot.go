@@ -14,6 +14,7 @@ import (
 	"xvitu/sec-bot/infra/telegram"
 	"xvitu/sec-bot/shared/env"
 	"xvitu/sec-bot/use_case"
+	"xvitu/sec-bot/use_case/processors"
 )
 
 func main() {
@@ -29,10 +30,17 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		dynamoCli, _ := dynamo.NewClient(context.TODO(), env.Get())
 		telegramCli := telegram.NewTelegramClient(env.Get())
-		useCase := use_case.NewChatUpdateProcessor(
+		chatRepository := repository.NewChatRepository(dynamoCli)
+		telegramGateway := telegram.NewGateway(telegramCli)
+		messageRepository := &repository.MessageRepository{}
+
+		useCase := use_case.NewChatUpdateHandler(
+			map[domain.Step]processors.MessageProcessor{
+				domain.Start:    processors.CreateNewChatProcessor(chatRepository, telegramGateway, messageRepository),
+				domain.Faq:      processors.NewFaqProcessor(chatRepository, telegramGateway, messageRepository),
+				domain.MainMenu: processors.NewMainMenuProcessor(chatRepository, telegramGateway, messageRepository),
+			},
 			repository.NewChatRepository(dynamoCli),
-			telegram.NewGateway(telegramCli),
-			&repository.MessageRepository{},
 		)
 
 		body, err := io.ReadAll(r.Body)

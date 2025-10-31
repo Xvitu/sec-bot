@@ -11,12 +11,24 @@ import (
 )
 
 type FaqProcessor struct {
-	chatRepository    *repository.ChatRepository
+	chatRepository    repository.ChatRepositoryInterface
 	telegramGateway   *telegram.Gateway
-	messageRepository *repository.MessageRepository
+	messageRepository repository.MessageRepositoryInterface
 }
 
 const backMessageId = "11"
+
+func NewFaqProcessor(
+	chatRepository repository.ChatRepositoryInterface,
+	telegramGateway *telegram.Gateway,
+	messageRepository repository.MessageRepositoryInterface,
+) *FaqProcessor {
+	return &FaqProcessor{
+		chatRepository:    chatRepository,
+		telegramGateway:   telegramGateway,
+		messageRepository: messageRepository,
+	}
+}
 
 func (p *FaqProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	if chatUpdate.Message == backMessageId {

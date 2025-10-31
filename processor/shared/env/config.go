@@ -23,7 +23,7 @@ var (
 
 func Get() *Config {
 	once.Do(func() {
-		_ = godotenv.Load("./processor/.env")
+		_ = godotenv.Load()
 
 		instance = &Config{
 			TelegramBotToken:      os.Getenv("TELEGRAM_BOT_TOKEN"),

@@ -11,8 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 )
 
-func NewClient(ctx context.Context) (*dynamodb.Client, error) {
-	envs := env.Get()
+func NewClient(ctx context.Context, envs *env.Config) (*dynamodb.Client, error) {
 
 	endpoint := envs.DynamoDBEndpoint
 	region := envs.AwsRegion

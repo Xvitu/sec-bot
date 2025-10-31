@@ -3,8 +3,11 @@ package persistence
 import "xvitu/sec-bot/domain"
 
 var Messages = map[domain.Step]map[string]string{
-	domain.Start: {
+	domain.MainMenu: {
 		"greetings": "Oi! Sou o SecBot, como posso te ajudar hoje? 1 - Duvidas; 2 - Quiz; 3 - Dicas; 4 - Infos Sobre golpes",
+	},
+	domain.Error: {
+		"invalid_option": "Nao entendi, pode repetir?",
 	},
 	domain.Faq: {
 		"faq_menu": "Aqui esta, uma lista de coisas que posso tirar duvidas:" +

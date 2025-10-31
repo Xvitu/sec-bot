@@ -6,11 +6,25 @@ import (
 	"xvitu/sec-bot/infra/persistence"
 )
 
+type MessageRepositoryInterface interface {
+	GetByStepAndMessageId(step domain.Step, messageId string) *entity.Message
+}
+
 type MessageRepository struct{}
 
-func (r *MessageRepository) GetByStepAndMessageId(step domain.Step, messageId string) entity.Message {
-	return entity.Message{
-		Id:   messageId,
-		Text: persistence.Messages[step][messageId],
+func (r *MessageRepository) GetByStepAndMessageId(step domain.Step, messageId string) *entity.Message {
+	messageStep := persistence.Messages[step]
+
+	if messageStep != nil {
+		message := messageStep[messageId]
+
+		if message != "" {
+			return &entity.Message{
+				Id:   messageId,
+				Text: message,
+			}
+		}
 	}
+
+	return nil
 }

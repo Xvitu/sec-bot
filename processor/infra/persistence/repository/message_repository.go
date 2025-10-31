@@ -6,6 +6,10 @@ import (
 	"xvitu/sec-bot/infra/persistence"
 )
 
+type MessageRepositoryInterface interface {
+	GetByStepAndMessageId(step domain.Step, messageId string) *entity.Message
+}
+
 type MessageRepository struct{}
 
 func (r *MessageRepository) GetByStepAndMessageId(step domain.Step, messageId string) *entity.Message {

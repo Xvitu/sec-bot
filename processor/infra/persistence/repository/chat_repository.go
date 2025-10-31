@@ -12,6 +12,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
+type ChatRepositoryInterface interface {
+	Save(ctx context.Context, chat domain.Chat) error
+	FindByExternalId(ctx context.Context, id string) (*domain.Chat, error)
+}
+
 type ChatRepository struct {
 	client    *dynamodb.Client
 	tableName string

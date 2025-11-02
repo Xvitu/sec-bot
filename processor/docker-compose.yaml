@@ -1,21 +1,37 @@
 version: "3.9"
 
 services:
-  app:
-    build: ..
-    container_name: sec-bot
+#  app:
+#    build: ..
+#    container_name: sec-bot
+#    ports:
+#      - "8080:8080"
+#    volumes:
+#      - .:/sec-bot
+#    restart: unless-stopped
+#    depends_on:
+#      - mongo
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: always
     ports:
-      - "8080:8080"
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
-      - .:/sec-bot
-    restart: unless-stopped
+      - ./mongo-data:/data/db
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_SERVER: mongo
     depends_on:
-      - dynamodb
-  dynamodb:
-    image: amazon/dynamodb-local:latest
-    container_name: dynamodb
-    ports:
-      - "8000:8000"
-    command: "-jar DynamoDBLocal.jar -sharedDb -inMemory"
-    volumes:
-      - ./data/dynamodb:/home/dynamodblocal/data
+      - mongo

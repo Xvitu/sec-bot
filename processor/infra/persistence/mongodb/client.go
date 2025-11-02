@@ -14,6 +14,13 @@ type Client struct {
 	dbName string
 }
 
+func NewClient(dbUrl, dbName string) *Client {
+	return &Client{
+		dbUrl:  dbUrl,
+		dbName: dbName,
+	}
+}
+
 func (c *Client) Connect() *mongo.Database {
 	clientOpts := options.Client().ApplyURI(c.dbUrl)
 

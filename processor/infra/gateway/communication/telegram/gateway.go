@@ -33,8 +33,8 @@ func (g *Gateway) SendMessage(chatID string, text string) (*response.SendMessage
 	}
 
 	return &response.SendMessageResponse{
-		MessageId: resultStruct.Result.MessageID,
-		ChatId:    resultStruct.Result.Chat.ID,
-		Text:      resultStruct.Result.Text,
+		MessageId: resultStruct.Result.MessageID.Get(),
+		ChatId:    resultStruct.Result.Chat.ID.Get(),
+		Text:      resultStruct.Result.Text.Get(),
 	}, nil
 }

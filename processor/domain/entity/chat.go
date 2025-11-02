@@ -12,3 +12,10 @@ type Chat struct {
 	Step          domain.Step   `json:"step"`
 	Origin        domain.Origin `json:"origin"`
 }
+
+func (c *Chat) UpdateWithRepledMessage(lastMessageID string, step domain.Step) *Chat {
+	c.LastMessageID = lastMessageID
+	c.Step = step
+
+	return c
+}

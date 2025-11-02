@@ -33,6 +33,7 @@ func main() {
 				domain.Start:    processors.CreateNewChatProcessor(chatRepository, telegramGateway, messageRepository),
 				domain.Faq:      processors.NewFaqProcessor(chatRepository, telegramGateway, messageRepository),
 				domain.MainMenu: processors.NewMainMenuProcessor(chatRepository, telegramGateway, messageRepository),
+				domain.Tips:     processors.NewTipsProcessor(chatRepository, telegramGateway, messageRepository),
 			},
 			chatRepository,
 		)

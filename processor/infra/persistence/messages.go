@@ -34,6 +34,7 @@ var Messages = map[domain.Step]map[string]string{
 		"faq_10": "Técnicas de manipulação psicológica para induzir pessoas a divulgar informações confidenciais.",
 	},
 	domain.Tips: {
+		// todo - melhorar dicas com indicacoes
 		"tip_1":    "Crie senhas longas e complexas, misturando letras, números e símbolos. Evite reutilizar senhas.",
 		"tip_2":    "Sempre que possível, ative a autenticação de dois fatores para proteger suas contas.",
 		"tip_3":    "Mantenha sistemas, aplicativos e antivírus sempre atualizados para corrigir vulnerabilidades.",
@@ -44,9 +45,10 @@ var Messages = map[domain.Step]map[string]string{
 		"tip_10":   "Não abra anexos de emails ou mensagens de fontes desconhecidas.",
 		"tip_11":   "Instale e mantenha um antivírus atualizado para detectar ameaças.",
 		"tip_12":   "Evite divulgar informações pessoais sensíveis que podem ser usadas em ataques de engenharia social.",
-		"tip_menu": "1 - Mais uma dica; 2 - Voltar",
+		"tip_menu": "1 - Dica aleatoria; 2 - Voltar",
 	},
 	domain.Scams: {
+		// todo - criar menu?
 		"scam_1":  "Golpe que tenta enganar a vítima para obter informações sensíveis, como senhas ou dados bancários, geralmente por email ou mensagem falsa.",
 		"scam_2":  "Golpe por telefone (voice phishing), onde o golpista se passa por uma empresa ou autoridade para obter dados confidenciais.",
 		"scam_3":  "Golpe via SMS, com links ou mensagens fraudulentas que induzem a vítima a fornecer informações pessoais.",
@@ -59,6 +61,7 @@ var Messages = map[domain.Step]map[string]string{
 		"scam_10": "Criminosos criam perfis falsos em redes sociais ou apps de relacionamento para enganar emocionalmente e pedir dinheiro.",
 	},
 	domain.Quiz: {
+		// todo - criar pontuacao?
 		"quiz_1":              "O que é phishing?\n1. Um tipo de malware\n2. Ataque de engenharia social\n3. Criptografia de dados",
 		"quiz_2":              "Para que serve um firewall?\n1. Protege redes\n2. Acelera conexão\n3. Cria senhas",
 		"quiz_3":              "Qual a diferença entre HTTP e HTTPS?\n1. HTTPS é seguro\n2. HTTP é seguro\n3. Não há diferença",

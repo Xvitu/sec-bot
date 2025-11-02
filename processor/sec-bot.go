@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,7 +8,7 @@ import (
 	"time"
 	"xvitu/sec-bot/domain"
 	"xvitu/sec-bot/entypoint/dto"
-	"xvitu/sec-bot/infra/persistence/dynamo"
+	"xvitu/sec-bot/infra/persistence/mongodb"
 	"xvitu/sec-bot/infra/persistence/repository"
 	"xvitu/sec-bot/infra/telegram"
 	"xvitu/sec-bot/shared/env"
@@ -19,18 +18,13 @@ import (
 
 func main() {
 
-	// todo - rever migrations
-	//ctx := context.TODO()
-	//dynamoClient, _ := dynamo.NewClient(context.TODO())
-	//err := dynamo.EnsureTableExists(ctx, dynamoClient, "Chats")
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		dynamoCli, _ := dynamo.NewClient(context.TODO(), env.Get())
-		telegramCli := telegram.NewTelegramClient(env.Get())
-		chatRepository := repository.NewChatRepository(dynamoCli)
+		envs := env.Get()
+
+		mongoCli := mongodb.NewClient(envs.MongoUrl, envs.DbName).Connect()
+
+		telegramCli := telegram.NewTelegramClient(envs)
+		chatRepository := repository.NewChatRepository(mongoCli)
 		telegramGateway := telegram.NewGateway(telegramCli)
 		messageRepository := &repository.MessageRepository{}
 
@@ -40,7 +34,7 @@ func main() {
 				domain.Faq:      processors.NewFaqProcessor(chatRepository, telegramGateway, messageRepository),
 				domain.MainMenu: processors.NewMainMenuProcessor(chatRepository, telegramGateway, messageRepository),
 			},
-			repository.NewChatRepository(dynamoCli),
+			chatRepository,
 		)
 
 		body, err := io.ReadAll(r.Body)

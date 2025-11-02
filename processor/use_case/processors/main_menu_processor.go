@@ -6,14 +6,14 @@ import (
 	"xvitu/sec-bot/domain"
 	domainEntity "xvitu/sec-bot/domain/entity"
 	"xvitu/sec-bot/entypoint/dto"
+	"xvitu/sec-bot/infra/gateway/communication"
 	"xvitu/sec-bot/infra/persistence/repository"
-	"xvitu/sec-bot/infra/telegram"
 )
 
 type MainMenuProcessor struct {
-	chatRepository    repository.ChatRepositoryInterface
-	telegramGateway   *telegram.Gateway
-	messageRepository repository.MessageRepositoryInterface
+	chatRepository       repository.ChatRepositoryInterface
+	communicationGateway communication.CommunicationGateway
+	messageRepository    repository.MessageRepositoryInterface
 }
 
 type MenuOptions struct {
@@ -29,13 +29,13 @@ const (
 
 func NewMainMenuProcessor(
 	chatRepository repository.ChatRepositoryInterface,
-	telegramGateway *telegram.Gateway,
+	communicationGateway communication.CommunicationGateway,
 	messageRepository repository.MessageRepositoryInterface,
 ) *MainMenuProcessor {
 	return &MainMenuProcessor{
-		messageRepository: messageRepository,
-		chatRepository:    chatRepository,
-		telegramGateway:   telegramGateway,
+		messageRepository:    messageRepository,
+		chatRepository:       chatRepository,
+		communicationGateway: communicationGateway,
 	}
 }
 
@@ -55,7 +55,7 @@ func (p *MainMenuProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat
 		break
 	case Tips:
 		step = domain.Tips
-		messageId = "tip_menu" // todo - random message
+		messageId = "tip_menu"
 		break
 	case Scams:
 		step = domain.Scams
@@ -68,7 +68,7 @@ func (p *MainMenuProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat
 	// todo - essas linhas vao repetir mto, talvez criar algo abstrato?
 	replyMessage = p.messageRepository.GetByStepAndMessageId(step, messageId)
 
-	p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+	p.communicationGateway.SendMessage(chat.ExternalId, replyMessage.Text)
 
 	chat.Step = step
 	chat.LastMessageID = messageId
@@ -79,7 +79,7 @@ func (p *MainMenuProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat
 // todo - helper? o codigo esta se repetindo
 func (p *MainMenuProcessor) handleError(messageId string, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	replyMessage := p.messageRepository.GetByStepAndMessageId(domain.Error, messageId)
-	_, sendMessageError := p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+	_, sendMessageError := p.communicationGateway.SendMessage(chat.ExternalId, replyMessage.Text)
 	if sendMessageError != nil {
 		return nil, fmt.Errorf("error while sending message: %s", sendMessageError)
 	}

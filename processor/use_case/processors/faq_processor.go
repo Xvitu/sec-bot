@@ -6,27 +6,27 @@ import (
 	"xvitu/sec-bot/domain"
 	domainEntity "xvitu/sec-bot/domain/entity"
 	"xvitu/sec-bot/entypoint/dto"
+	"xvitu/sec-bot/infra/gateway/communication"
 	"xvitu/sec-bot/infra/persistence/repository"
-	"xvitu/sec-bot/infra/telegram"
 )
 
 type FaqProcessor struct {
-	chatRepository    repository.ChatRepositoryInterface
-	telegramGateway   *telegram.Gateway
-	messageRepository repository.MessageRepositoryInterface
+	chatRepository       repository.ChatRepositoryInterface
+	communicationGateway communication.CommunicationGateway
+	messageRepository    repository.MessageRepositoryInterface
 }
 
 const backMessageId = "11"
 
 func NewFaqProcessor(
 	chatRepository repository.ChatRepositoryInterface,
-	telegramGateway *telegram.Gateway,
+	communicationGateway communication.CommunicationGateway,
 	messageRepository repository.MessageRepositoryInterface,
 ) *FaqProcessor {
 	return &FaqProcessor{
-		chatRepository:    chatRepository,
-		telegramGateway:   telegramGateway,
-		messageRepository: messageRepository,
+		chatRepository:       chatRepository,
+		communicationGateway: communicationGateway,
+		messageRepository:    messageRepository,
 	}
 }
 
@@ -45,7 +45,7 @@ func (p *FaqProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*d
 
 func (p *FaqProcessor) handleError(messageId string, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	replyMessage := p.messageRepository.GetByStepAndMessageId(domain.Error, messageId)
-	_, sendMessageError := p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+	_, sendMessageError := p.communicationGateway.SendMessage(chat.ExternalId, replyMessage.Text)
 	if sendMessageError != nil {
 		return nil, fmt.Errorf("error while sending message: %s", sendMessageError)
 	}
@@ -59,7 +59,7 @@ func (p *FaqProcessor) handleMessage(step domain.Step, messageId string, chat *d
 		return nil, fmt.Errorf("no Message Found")
 	}
 
-	_, sendMessageError := p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+	_, sendMessageError := p.communicationGateway.SendMessage(chat.ExternalId, replyMessage.Text)
 	if sendMessageError != nil {
 		return nil, fmt.Errorf("error while sending message: %s", sendMessageError)
 	}

@@ -6,6 +6,9 @@ import (
 	"io"
 	"net/http"
 	"time"
+	"xvitu/sec-bot/application/service"
+	"xvitu/sec-bot/application/use_case"
+	processors2 "xvitu/sec-bot/application/use_case/processors"
 	"xvitu/sec-bot/domain"
 	"xvitu/sec-bot/entypoint/dto"
 	telegramClient "xvitu/sec-bot/infra/client/telegram"
@@ -13,8 +16,6 @@ import (
 	"xvitu/sec-bot/infra/persistence/mongodb"
 	"xvitu/sec-bot/infra/persistence/repository"
 	"xvitu/sec-bot/shared/env"
-	"xvitu/sec-bot/use_case"
-	"xvitu/sec-bot/use_case/processors"
 )
 
 func main() {
@@ -29,12 +30,14 @@ func main() {
 		gateway := telegramGateway.NewGateway(telegramCli)
 		messageRepository := &repository.MessageRepository{}
 
+		chatService := service.NewChatService(chatRepository, gateway, messageRepository)
+
 		useCase := use_case.NewChatUpdateHandler(
-			map[domain.Step]processors.MessageProcessor{
-				domain.Start:    processors.CreateNewChatProcessor(chatRepository, gateway, messageRepository),
-				domain.Faq:      processors.NewFaqProcessor(chatRepository, gateway, messageRepository),
-				domain.MainMenu: processors.NewMainMenuProcessor(chatRepository, gateway, messageRepository),
-				domain.Tips:     processors.NewTipsProcessor(chatRepository, gateway, messageRepository),
+			map[domain.Step]processors2.MessageProcessor{
+				domain.Start:    processors2.CreateNewChatProcessor(chatService),
+				domain.Faq:      processors2.NewFaqProcessor(chatService),
+				domain.MainMenu: processors2.NewMainMenuProcessor(chatService),
+				domain.Tips:     processors2.NewTipsProcessor(chatService, messageRepository),
 			},
 			chatRepository,
 		)

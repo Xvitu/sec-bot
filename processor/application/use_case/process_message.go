@@ -3,11 +3,11 @@ package use_case
 import (
 	"context"
 	"time"
+	"xvitu/sec-bot/application/use_case/processors"
 	"xvitu/sec-bot/domain"
 	domainEntity "xvitu/sec-bot/domain/entity"
 	"xvitu/sec-bot/entypoint/dto"
 	"xvitu/sec-bot/infra/persistence/repository"
-	"xvitu/sec-bot/use_case/processors"
 )
 
 type ChatUpdateHandler struct {

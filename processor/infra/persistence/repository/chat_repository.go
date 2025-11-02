@@ -9,6 +9,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type ChatRepositoryInterface interface {
@@ -32,8 +33,11 @@ func (r *ChatRepository) Save(ctx context.Context, chat domain.Chat) error {
 	chatEntity := entity.FromDomain(chat)
 
 	collection := r.database.Collection(r.tableName)
+	filter := bson.M{"_id": chatEntity.Id}
+	update := bson.M{"$set": chatEntity}
+	opts := options.Update().SetUpsert(true)
 
-	_, err := collection.InsertOne(ctx, chatEntity)
+	_, err := collection.UpdateOne(ctx, filter, update, opts)
 	if err != nil {
 		return fmt.Errorf("erro ao salvar chat no MongoDB: %w", err)
 	}
@@ -45,7 +49,7 @@ func (r *ChatRepository) FindByExternalId(ctx context.Context, id string) (*doma
 	collection := r.database.Collection(r.tableName)
 
 	var chatEntity entity.Chat
-	err := collection.FindOne(ctx, bson.M{"external_id": id}).Decode(&chatEntity)
+	err := collection.FindOne(ctx, bson.M{"externalid": id}).Decode(&chatEntity)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, nil

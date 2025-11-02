@@ -2,14 +2,13 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	domain "xvitu/sec-bot/domain/entity"
 	"xvitu/sec-bot/infra/persistence/entity"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type ChatRepositoryInterface interface {
@@ -18,13 +17,13 @@ type ChatRepositoryInterface interface {
 }
 
 type ChatRepository struct {
-	client    *dynamodb.Client
+	database  *mongo.Database
 	tableName string
 }
 
-func NewChatRepository(client *dynamodb.Client) *ChatRepository {
+func NewChatRepository(database *mongo.Database) *ChatRepository {
 	return &ChatRepository{
-		client:    client,
+		database:  database,
 		tableName: "Chats",
 	}
 }
@@ -32,40 +31,26 @@ func NewChatRepository(client *dynamodb.Client) *ChatRepository {
 func (r *ChatRepository) Save(ctx context.Context, chat domain.Chat) error {
 	chatEntity := entity.FromDomain(chat)
 
-	item, err := attributevalue.MarshalMap(chatEntity)
+	collection := r.database.Collection(r.tableName)
+
+	_, err := collection.InsertOne(ctx, chatEntity)
 	if err != nil {
-		return fmt.Errorf("erro ao serializar chat: %w", err)
+		return fmt.Errorf("erro ao salvar chat no MongoDB: %w", err)
 	}
 
-	_, err = r.client.PutItem(ctx, &dynamodb.PutItemInput{
-		TableName: &r.tableName,
-		Item:      item,
-	})
-	return err
+	return nil
 }
 
-// todo - ver questao de custo do GSI
 func (r *ChatRepository) FindByExternalId(ctx context.Context, id string) (*domain.Chat, error) {
-	out, err := r.client.Query(ctx, &dynamodb.QueryInput{
-		TableName:              &r.tableName,
-		IndexName:              aws.String("ExternalIDIndex"),
-		KeyConditionExpression: aws.String("external_id = :eid"),
-		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":eid": &types.AttributeValueMemberS{Value: id},
-		},
-	})
-	if err != nil {
-		return nil, fmt.Errorf("erro ao buscar chat: %w", err)
-	}
+	collection := r.database.Collection(r.tableName)
 
-	if len(out.Items) == 0 {
-		return nil, nil
-	}
-
-	item := out.Items[0]
 	var chatEntity entity.Chat
-	if err := attributevalue.UnmarshalMap(item, &chatEntity); err != nil {
-		return nil, fmt.Errorf("erro ao deserializar chat: %w", err)
+	err := collection.FindOne(ctx, bson.M{"external_id": id}).Decode(&chatEntity)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("erro ao buscar chat: %w", err)
 	}
 
 	domainChat := entity.ToDomain(chatEntity)

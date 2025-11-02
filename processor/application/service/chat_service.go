@@ -9,8 +9,6 @@ import (
 	"xvitu/sec-bot/infra/persistence/repository"
 )
 
-// todo - renomear package
-
 type ChatService struct {
 	chatRepository       repository.ChatRepositoryInterface
 	communicationGateway communication.CommunicationGateway

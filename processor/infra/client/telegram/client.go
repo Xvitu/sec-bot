@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"xvitu/sec-bot/infra/telegram/request"
+	"xvitu/sec-bot/infra/gateway/communication/telegram/request"
 	"xvitu/sec-bot/shared/env"
 )
 

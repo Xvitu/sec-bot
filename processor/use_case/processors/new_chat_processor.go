@@ -6,33 +6,33 @@ import (
 	"xvitu/sec-bot/domain"
 	domainEntity "xvitu/sec-bot/domain/entity"
 	"xvitu/sec-bot/entypoint/dto"
+	"xvitu/sec-bot/infra/gateway/communication"
 	"xvitu/sec-bot/infra/persistence/repository"
-	"xvitu/sec-bot/infra/telegram"
 
 	"github.com/google/uuid"
 )
 
 type NewChatProcessor struct {
-	chatRepository    repository.ChatRepositoryInterface
-	telegramGateway   *telegram.Gateway
-	messageRepository repository.MessageRepositoryInterface
+	chatRepository       repository.ChatRepositoryInterface
+	communicationGateway communication.CommunicationGateway
+	messageRepository    repository.MessageRepositoryInterface
 }
 
 func CreateNewChatProcessor(
 	chatRepository repository.ChatRepositoryInterface,
-	telegramGateway *telegram.Gateway,
+	communicationGateway communication.CommunicationGateway,
 	messageRepository repository.MessageRepositoryInterface,
 ) *NewChatProcessor {
 	return &NewChatProcessor{
-		chatRepository:    chatRepository,
-		telegramGateway:   telegramGateway,
-		messageRepository: messageRepository,
+		chatRepository:       chatRepository,
+		communicationGateway: communicationGateway,
+		messageRepository:    messageRepository,
 	}
 }
 
 func (p *NewChatProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	message := p.messageRepository.GetByStepAndMessageId(domain.MainMenu, "greetings")
-	_, sendMessageError := p.telegramGateway.SendMessage(chatUpdate.ExternalId, message.Text)
+	_, sendMessageError := p.communicationGateway.SendMessage(chatUpdate.ExternalId, message.Text)
 
 	if sendMessageError != nil {
 		return nil, sendMessageError

@@ -7,25 +7,25 @@ import (
 	"xvitu/sec-bot/domain"
 	domainEntity "xvitu/sec-bot/domain/entity"
 	"xvitu/sec-bot/entypoint/dto"
+	"xvitu/sec-bot/infra/gateway/communication"
 	"xvitu/sec-bot/infra/persistence/repository"
-	"xvitu/sec-bot/infra/telegram"
 )
 
 type TipsProcessor struct {
-	chatRepository    repository.ChatRepositoryInterface
-	telegramGateway   *telegram.Gateway
-	messageRepository repository.MessageRepositoryInterface
+	chatRepository       repository.ChatRepositoryInterface
+	communicationGateway communication.CommunicationGateway
+	messageRepository    repository.MessageRepositoryInterface
 }
 
 func NewTipsProcessor(
 	chatRepository repository.ChatRepositoryInterface,
-	telegramGateway *telegram.Gateway,
+	communicationGateway communication.CommunicationGateway,
 	messageRepository repository.MessageRepositoryInterface,
 ) *TipsProcessor {
 	return &TipsProcessor{
-		chatRepository:    chatRepository,
-		telegramGateway:   telegramGateway,
-		messageRepository: messageRepository,
+		chatRepository:       chatRepository,
+		communicationGateway: communicationGateway,
+		messageRepository:    messageRepository,
 	}
 }
 
@@ -39,16 +39,16 @@ func (p *TipsProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*
 	switch chatUpdate.Message {
 	case MoreTips:
 		tip := p.randomTip(chat)
-		p.telegramGateway.SendMessage(chat.ExternalId, tip.Text)
+		p.communicationGateway.SendMessage(chat.ExternalId, tip.Text)
 
 		menuMesage := p.messageRepository.GetByStepAndMessageId(domain.Tips, TipMenu)
-		p.telegramGateway.SendMessage(chat.ExternalId, menuMesage.Text)
+		p.communicationGateway.SendMessage(chat.ExternalId, menuMesage.Text)
 
 		p.updateChat(tip.Id, domain.Tips, chat)
 		break
 	case Back:
 		backMessage := p.messageRepository.GetByStepAndMessageId(domain.MainMenu, "greetings")
-		p.telegramGateway.SendMessage(chat.ExternalId, backMessage.Text)
+		p.communicationGateway.SendMessage(chat.ExternalId, backMessage.Text)
 
 		p.updateChat(backMessage.Id, domain.MainMenu, chat)
 		break
@@ -72,7 +72,7 @@ func (p *TipsProcessor) randomTip(chat *domainEntity.Chat) *domainEntity.Message
 
 func (p *TipsProcessor) handleError(messageId string, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	replyMessage := p.messageRepository.GetByStepAndMessageId(domain.Error, messageId)
-	_, sendMessageError := p.telegramGateway.SendMessage(chat.ExternalId, replyMessage.Text)
+	_, sendMessageError := p.communicationGateway.SendMessage(chat.ExternalId, replyMessage.Text)
 	if sendMessageError != nil {
 		return nil, fmt.Errorf("error while sending message: %s", sendMessageError)
 	}

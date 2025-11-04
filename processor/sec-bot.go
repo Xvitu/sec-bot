@@ -32,13 +32,20 @@ func main() {
 
 		chatService := service.NewChatService(chatRepository, gateway, messageRepository)
 
+		quizProcessor := processors.NewQuizProcessor(chatService, messageRepository)
+
 		useCase := use_case.NewChatUpdateHandler(
 			map[domain.Step]processors.MessageProcessor{
-				domain.Start:    processors.CreateNewChatProcessor(chatService),
-				domain.Faq:      processors.NewFaqProcessor(chatService),
-				domain.MainMenu: processors.NewMainMenuProcessor(chatService),
-				domain.Tips:     processors.NewTipsProcessor(chatService, messageRepository),
-				domain.Scams:    processors.NewScamProcessor(chatService),
+				domain.Start:           processors.CreateNewChatProcessor(chatService),
+				domain.Faq:             processors.NewFaqProcessor(chatService),
+				domain.MainMenu:        processors.NewMainMenuProcessor(chatService),
+				domain.Tips:            processors.NewTipsProcessor(chatService, messageRepository),
+				domain.Scams:           processors.NewScamProcessor(chatService),
+				domain.QuizExplanation: quizProcessor,
+				domain.Quiz:            quizProcessor,
+				domain.QuizAnswer:      quizProcessor,
+				domain.QuizQuestion:    quizProcessor,
+				domain.QuizFeedback:    quizProcessor,
 			},
 			chatRepository,
 		)

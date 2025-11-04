@@ -48,7 +48,18 @@ var Messages = map[domain.Step]map[string]string{
 		"tip_menu": "1 - Dica aleatoria; 2 - Voltar",
 	},
 	domain.Scams: {
-		// todo - criar menu?
+		"scam_menu": "Aqui esta uma lista de alguns goples conhecidos:" +
+			"1- Phishing (golpe por e-mail ou mensagem falsa)" +
+			"2- Voice Phishing (golpe por telefone)" +
+			"3- Smishing (golpe via SMS)" +
+			"4- Suporte técnico falso" +
+			"5- Boleto ou cobrança falsa" +
+			"6- Golpe do código do WhatsApp" +
+			"7- Golpe do comprovante falso / PIX falso" +
+			"8- Loja ou anúncio falso" +
+			"9- Golpe do prêmio falso" +
+			"10- Romance scam (golpe do falso relacionamento)" +
+			"11- Voltar",
 		"scam_1":  "Golpe que tenta enganar a vítima para obter informações sensíveis, como senhas ou dados bancários, geralmente por email ou mensagem falsa.",
 		"scam_2":  "Golpe por telefone (voice phishing), onde o golpista se passa por uma empresa ou autoridade para obter dados confidenciais.",
 		"scam_3":  "Golpe via SMS, com links ou mensagens fraudulentas que induzem a vítima a fornecer informações pessoais.",

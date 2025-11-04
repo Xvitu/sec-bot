@@ -8,6 +8,6 @@ const (
 	Faq      Step = "faq"
 	Quiz     Step = "quiz"
 	Tips     Step = "tips"
-	Scams    Step = "scams"
+	Scams    Step = "scam"
 	Error    Step = "error"
 )

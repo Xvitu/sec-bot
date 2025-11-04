@@ -11,7 +11,7 @@ type FaqProcessor struct {
 	chatService *service.ChatService
 }
 
-const backMessageId = "11"
+const faqBackMessageId = "11"
 
 func NewFaqProcessor(
 	chatService *service.ChatService,
@@ -20,7 +20,7 @@ func NewFaqProcessor(
 }
 
 func (p *FaqProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
-	if chatUpdate.Message == backMessageId {
+	if chatUpdate.Message == faqBackMessageId {
 		return p.chatService.HandleReplyMessages(domain.MainMenu, []string{"greetings"}, chat)
 	}
 

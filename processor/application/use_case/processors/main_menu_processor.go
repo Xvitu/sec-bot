@@ -45,7 +45,7 @@ func (p *MainMenuProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat
 		break
 	case Scams:
 		step = domain.Scams
-		messageId = "faq_menu" // todo - mudar para menu
+		messageId = "scam_menu"
 		break
 	default:
 		return p.chatService.HandleError("invalid_option", chat)

@@ -8,7 +8,7 @@ import (
 	"time"
 	"xvitu/sec-bot/application/service"
 	"xvitu/sec-bot/application/use_case"
-	processors2 "xvitu/sec-bot/application/use_case/processors"
+	"xvitu/sec-bot/application/use_case/processors"
 	"xvitu/sec-bot/domain"
 	"xvitu/sec-bot/entypoint/dto"
 	telegramClient "xvitu/sec-bot/infra/client/telegram"
@@ -33,11 +33,12 @@ func main() {
 		chatService := service.NewChatService(chatRepository, gateway, messageRepository)
 
 		useCase := use_case.NewChatUpdateHandler(
-			map[domain.Step]processors2.MessageProcessor{
-				domain.Start:    processors2.CreateNewChatProcessor(chatService),
-				domain.Faq:      processors2.NewFaqProcessor(chatService),
-				domain.MainMenu: processors2.NewMainMenuProcessor(chatService),
-				domain.Tips:     processors2.NewTipsProcessor(chatService, messageRepository),
+			map[domain.Step]processors.MessageProcessor{
+				domain.Start:    processors.CreateNewChatProcessor(chatService),
+				domain.Faq:      processors.NewFaqProcessor(chatService),
+				domain.MainMenu: processors.NewMainMenuProcessor(chatService),
+				domain.Tips:     processors.NewTipsProcessor(chatService, messageRepository),
+				domain.Scams:    processors.NewScamProcessor(chatService),
 			},
 			chatRepository,
 		)

@@ -1,10 +1,10 @@
 package repository
 
 import (
+	"github.com/xvitu/sec-bot/processor/domain"
+	"github.com/xvitu/sec-bot/processor/domain/entity"
+	"github.com/xvitu/sec-bot/processor/infra/persistence"
 	"slices"
-	"xvitu/sec-bot/domain"
-	"xvitu/sec-bot/domain/entity"
-	"xvitu/sec-bot/infra/persistence"
 )
 
 type MessageRepositoryInterface interface {

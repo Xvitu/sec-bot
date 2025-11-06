@@ -1,6 +1,6 @@
 package dto
 
-import "xvitu/sec-bot/domain"
+import "github.com/xvitu/sec-bot/processor/domain"
 
 type Chat struct {
 	ExternalId     string        `json:"external_id"`

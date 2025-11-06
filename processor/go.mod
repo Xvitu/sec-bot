@@ -1,4 +1,4 @@
-module xvitu/sec-bot
+module github.com/xvitu/sec-bot/processor
 
 go 1.25.3
 

@@ -3,10 +3,11 @@ package service
 import (
 	"context"
 	"fmt"
-	"xvitu/sec-bot/domain"
-	domainEntity "xvitu/sec-bot/domain/entity"
-	"xvitu/sec-bot/infra/gateway/communication"
-	"xvitu/sec-bot/infra/persistence/repository"
+
+	"github.com/xvitu/sec-bot/processor/domain"
+	domainEntity "github.com/xvitu/sec-bot/processor/domain/entity"
+	"github.com/xvitu/sec-bot/processor/infra/gateway/communication"
+	"github.com/xvitu/sec-bot/processor/infra/persistence/repository"
 )
 
 type ChatService struct {

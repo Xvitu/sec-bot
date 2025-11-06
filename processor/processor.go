@@ -6,16 +6,17 @@ import (
 	"io"
 	"net/http"
 	"time"
-	"xvitu/sec-bot/application/service"
-	"xvitu/sec-bot/application/use_case"
-	"xvitu/sec-bot/application/use_case/processors"
-	"xvitu/sec-bot/domain"
-	"xvitu/sec-bot/entypoint/dto"
-	telegramClient "xvitu/sec-bot/infra/client/telegram"
-	telegramGateway "xvitu/sec-bot/infra/gateway/communication/telegram"
-	"xvitu/sec-bot/infra/persistence/mongodb"
-	"xvitu/sec-bot/infra/persistence/repository"
-	"xvitu/sec-bot/shared/env"
+
+	"github.com/xvitu/sec-bot/processor/application/service"
+	"github.com/xvitu/sec-bot/processor/application/use_case"
+	"github.com/xvitu/sec-bot/processor/application/use_case/processors"
+	"github.com/xvitu/sec-bot/processor/domain"
+	"github.com/xvitu/sec-bot/processor/entypoint/dto"
+	telegramClient "github.com/xvitu/sec-bot/processor/infra/client/telegram"
+	telegramGateway "github.com/xvitu/sec-bot/processor/infra/gateway/communication/telegram"
+	"github.com/xvitu/sec-bot/processor/infra/persistence/mongodb"
+	"github.com/xvitu/sec-bot/processor/infra/persistence/repository"
+	"github.com/xvitu/sec-bot/processor/shared/env"
 )
 
 func main() {

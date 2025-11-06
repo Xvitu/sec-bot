@@ -1,10 +1,10 @@
 package processors
 
 import (
-	"xvitu/sec-bot/application/service"
-	"xvitu/sec-bot/domain"
-	domainEntity "xvitu/sec-bot/domain/entity"
-	"xvitu/sec-bot/entypoint/dto"
+	"github.com/xvitu/sec-bot/processor/application/service"
+	"github.com/xvitu/sec-bot/processor/domain"
+	domainEntity "github.com/xvitu/sec-bot/processor/domain/entity"
+	"github.com/xvitu/sec-bot/processor/entypoint/dto"
 )
 
 type MainMenuProcessor struct {

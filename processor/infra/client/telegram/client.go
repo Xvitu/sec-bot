@@ -3,13 +3,13 @@ package telegram
 import (
 	"bytes"
 	"fmt"
+	"github.com/xvitu/sec-bot/processor/infra/gateway/communication/telegram/request"
+	"github.com/xvitu/sec-bot/processor/shared/env"
 	"io"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
-	"xvitu/sec-bot/infra/gateway/communication/telegram/request"
-	"xvitu/sec-bot/shared/env"
 )
 
 type Client struct {

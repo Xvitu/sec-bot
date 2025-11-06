@@ -2,11 +2,12 @@ package processors
 
 import (
 	"math/rand"
-	"xvitu/sec-bot/application/service"
-	"xvitu/sec-bot/domain"
-	domainEntity "xvitu/sec-bot/domain/entity"
-	"xvitu/sec-bot/entypoint/dto"
-	"xvitu/sec-bot/infra/persistence/repository"
+
+	"github.com/xvitu/sec-bot/processor/application/service"
+	"github.com/xvitu/sec-bot/processor/domain"
+	domainEntity "github.com/xvitu/sec-bot/processor/domain/entity"
+	"github.com/xvitu/sec-bot/processor/entypoint/dto"
+	"github.com/xvitu/sec-bot/processor/infra/persistence/repository"
 )
 
 type QuizProcessor struct {

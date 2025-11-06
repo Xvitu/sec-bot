@@ -1,7 +1,7 @@
 package entity
 
-import "xvitu/sec-bot/domain"
-import domainEntity "xvitu/sec-bot/domain/entity"
+import "github.com/xvitu/sec-bot/processor/domain"
+import domainEntity "github.com/xvitu/sec-bot/processor/domain/entity"
 
 type Chat struct {
 	Id            string        `dynamodbav:"id"`

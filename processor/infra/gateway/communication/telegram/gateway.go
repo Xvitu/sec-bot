@@ -1,12 +1,12 @@
 package telegram
 
 import (
+	client "github.com/xvitu/sec-bot/processor/infra/client/telegram"
+	"github.com/xvitu/sec-bot/processor/infra/gateway/communication/response"
+	"github.com/xvitu/sec-bot/processor/infra/gateway/communication/telegram/request"
+	telegramResponse "github.com/xvitu/sec-bot/processor/infra/gateway/communication/telegram/response"
+	"github.com/xvitu/sec-bot/processor/shared/json"
 	"strconv"
-	client "xvitu/sec-bot/infra/client/telegram"
-	"xvitu/sec-bot/infra/gateway/communication/response"
-	"xvitu/sec-bot/infra/gateway/communication/telegram/request"
-	telegramResponse "xvitu/sec-bot/infra/gateway/communication/telegram/response"
-	"xvitu/sec-bot/shared/json"
 )
 
 type Gateway struct {

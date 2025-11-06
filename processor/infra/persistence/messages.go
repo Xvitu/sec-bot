@@ -1,6 +1,6 @@
 package persistence
 
-import "xvitu/sec-bot/domain"
+import "github.com/xvitu/sec-bot/processor/domain"
 
 var Messages = map[domain.Step]map[string]string{
 	domain.MainMenu: {

@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	domain "xvitu/sec-bot/domain/entity"
-	"xvitu/sec-bot/infra/persistence/entity"
+	domain "github.com/xvitu/sec-bot/processor/domain/entity"
+	"github.com/xvitu/sec-bot/processor/infra/persistence/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

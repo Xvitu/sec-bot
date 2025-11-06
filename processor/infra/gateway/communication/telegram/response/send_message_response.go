@@ -1,7 +1,7 @@
 package response
 
 import (
-	"xvitu/sec-bot/shared/types"
+	"github.com/xvitu/sec-bot/processor/shared/types"
 )
 
 type Chat struct {

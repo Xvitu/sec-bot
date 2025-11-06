@@ -37,7 +37,7 @@ func (p *MainMenuProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat
 		break
 	case Quiz:
 		step = domain.Quiz
-		messageId = "faq_menu" // todo - random message
+		messageId = "quiz_menu"
 		break
 	case Tips:
 		step = domain.Tips

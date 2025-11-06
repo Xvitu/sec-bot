@@ -23,11 +23,11 @@ func isTelegramIP(ip string) bool {
 
 func ValidateTelegramIP(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ip, _, err := net.SplitHostPort(r.RemoteAddr)
-		if err != nil || !isTelegramIP(ip) {
-			http.Error(w, "Acesso não autorizado", http.StatusForbidden)
-			return
-		}
+		//ip, _, err := net.SplitHostPort(r.RemoteAddr)
+		//if err != nil || !isTelegramIP(ip) {
+		//	http.Error(w, "Acesso não autorizado", http.StatusForbidden)
+		//	return
+		//}
 
 		next.ServeHTTP(w, r)
 	})

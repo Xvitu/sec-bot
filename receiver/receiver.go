@@ -7,6 +7,7 @@ import (
 
 	"github.com/xvitu/sec-bot/receiver/boundary"
 	"github.com/xvitu/sec-bot/receiver/boundary/middleware"
+	"github.com/xvitu/sec-bot/receiver/infra/sqs"
 
 	"github.com/joho/godotenv"
 )
@@ -14,7 +15,9 @@ import (
 func main() {
 	_ = godotenv.Load()
 
-	webhookController := &boundary.WebHookController{}
+	client := (sqs.SqsClient{})
+	sqsClient := client.Create()
+	webhookController := boundary.NewWebhookController(sqsClient)
 
 	http.Handle(
 		"/telegram/webhook/"+os.Getenv("TELEGRAM_WEBHOOK_TOKEN"),

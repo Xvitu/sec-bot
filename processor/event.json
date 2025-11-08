@@ -1,0 +1,15 @@
+{
+  "Records": [
+    {
+      "messageId": "1",
+      "receiptHandle": "abc",
+      "body": "{\"external_id\":\"5470945009\",\"external_user_id\":\"5470945009\",\"created_at\":\"2025-11-08T21:00:00Z\",\"message\":\"1\",\"origin\":\"telegram\"}",
+      "attributes": {},
+      "messageAttributes": {},
+      "md5OfBody": "string",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:000000000000:chat-updates-queue",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}

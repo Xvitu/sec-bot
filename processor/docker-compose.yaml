@@ -1,16 +1,6 @@
 version: "3.9"
 
 services:
-#  app:
-#    build: ..
-#    container_name: sec-bot
-#    ports:
-#      - "8080:8080"
-#    volumes:
-#      - .:/sec-bot
-#    restart: unless-stopped
-#    depends_on:
-#      - mongo
   localstack:
     image: localstack/localstack
     container_name: localstack
@@ -32,6 +22,9 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - ./mongo-data:/data/db
+    networks:
+      - sam-local
+      - default
 
   mongo-express:
     image: mongo-express
@@ -45,3 +38,9 @@ services:
       ME_CONFIG_MONGODB_SERVER: mongo
     depends_on:
       - mongo
+    networks:
+      - sam-local
+      - default
+networks:
+  sam-local:
+    external: true

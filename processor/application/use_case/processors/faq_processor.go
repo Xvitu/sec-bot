@@ -19,7 +19,7 @@ func NewFaqProcessor(
 	return &FaqProcessor{chatService: chatService}
 }
 
-func (p *FaqProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
+func (p *FaqProcessor) Execute(chatUpdate *dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	if chatUpdate.Message == faqBackMessageId {
 		return p.chatService.HandleReplyMessages(domain.MainMenu, []string{"greetings"}, chat)
 	}

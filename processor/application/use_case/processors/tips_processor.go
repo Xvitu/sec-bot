@@ -1,12 +1,13 @@
 package processors
 
 import (
+	"math/rand"
+
 	"github.com/xvitu/sec-bot/processor/application/service"
 	"github.com/xvitu/sec-bot/processor/domain"
 	domainEntity "github.com/xvitu/sec-bot/processor/domain/entity"
 	"github.com/xvitu/sec-bot/processor/entypoint/dto"
 	"github.com/xvitu/sec-bot/processor/infra/persistence/repository"
-	"math/rand"
 )
 
 type TipsProcessor struct {
@@ -30,7 +31,7 @@ const (
 	TipMenu  = "tip_menu"
 )
 
-func (p *TipsProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
+func (p *TipsProcessor) Execute(chatUpdate *dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	var messages []string
 	var step domain.Step
 

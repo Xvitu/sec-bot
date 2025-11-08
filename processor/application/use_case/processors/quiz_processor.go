@@ -26,7 +26,7 @@ const QuizBack = "2"
 const SendQuestion = "1"
 const QuizMenu = "quiz_menu"
 
-func (p *QuizProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
+func (p *QuizProcessor) Execute(chatUpdate *dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	var messages []string
 	var step domain.Step
 	lastMessage := chat.LastMessageID

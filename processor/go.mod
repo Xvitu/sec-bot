@@ -3,6 +3,7 @@ module github.com/xvitu/sec-bot/processor
 go 1.25.3
 
 require (
+	github.com/aws/aws-lambda-go v1.50.0
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	go.mongodb.org/mongo-driver v1.17.6

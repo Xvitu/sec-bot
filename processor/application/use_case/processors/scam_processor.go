@@ -17,7 +17,7 @@ func NewScamProcessor(chatService *service.ChatService) *ScamProcessor {
 	return &ScamProcessor{chatService: chatService}
 }
 
-func (p *ScamProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
+func (p *ScamProcessor) Execute(chatUpdate *dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	if chatUpdate.Message == scamBackMessageId {
 		return p.chatService.HandleReplyMessages(domain.MainMenu, []string{"greetings"}, chat)
 	}

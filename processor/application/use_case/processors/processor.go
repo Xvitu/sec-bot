@@ -6,5 +6,5 @@ import (
 )
 
 type MessageProcessor interface {
-	Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error)
+	Execute(chatUpdate *dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error)
 }

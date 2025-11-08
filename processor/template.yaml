@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Lambda consumer de SQS em Go
+
+Resources:
+  ChatConsumerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: ChatConsumer
+      Handler: main
+      Runtime: go1.x
+      MemorySize: 128
+      Timeout: 30
+      Environment:
+        Variables:
+          LOG_LEVEL: info
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: arn:aws:sqs:us-east-1:000000000000:chat-updates-queue

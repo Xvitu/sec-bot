@@ -26,7 +26,7 @@ func NewMainMenuProcessor(chatService *service.ChatService) *MainMenuProcessor {
 	return &MainMenuProcessor{chatService: chatService}
 }
 
-func (p *MainMenuProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
+func (p *MainMenuProcessor) Execute(chatUpdate *dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	option := MenuOptions{chatUpdate.Message}
 	var step domain.Step
 	var messageId string

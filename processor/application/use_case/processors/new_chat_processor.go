@@ -1,11 +1,12 @@
 package processors
 
 import (
+	"time"
+
 	"github.com/xvitu/sec-bot/processor/application/service"
 	"github.com/xvitu/sec-bot/processor/domain"
 	domainEntity "github.com/xvitu/sec-bot/processor/domain/entity"
 	"github.com/xvitu/sec-bot/processor/entypoint/dto"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -20,7 +21,7 @@ func CreateNewChatProcessor(chatService *service.ChatService) *NewChatProcessor 
 
 const InitialMessageId = "greetings"
 
-func (p *NewChatProcessor) Execute(chatUpdate dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
+func (p *NewChatProcessor) Execute(chatUpdate *dto.Chat, chat *domainEntity.Chat) (*domainEntity.Chat, error) {
 	domainChat := &domainEntity.Chat{
 		Origin:        chatUpdate.Origin,
 		ExternalId:    chatUpdate.ExternalId,

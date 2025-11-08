@@ -1,17 +1,12 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io"
-	"net/http"
-	"time"
-
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/xvitu/sec-bot/processor/application/service"
 	"github.com/xvitu/sec-bot/processor/application/use_case"
 	"github.com/xvitu/sec-bot/processor/application/use_case/processors"
+	"github.com/xvitu/sec-bot/processor/boudary"
 	"github.com/xvitu/sec-bot/processor/domain"
-	"github.com/xvitu/sec-bot/processor/entypoint/dto"
 	telegramClient "github.com/xvitu/sec-bot/processor/infra/client/telegram"
 	telegramGateway "github.com/xvitu/sec-bot/processor/infra/gateway/communication/telegram"
 	"github.com/xvitu/sec-bot/processor/infra/persistence/mongodb"
@@ -21,64 +16,37 @@ import (
 
 func main() {
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		envs := env.Get()
+	envs := env.Get()
 
-		mongoCli := mongodb.NewClient(envs.MongoUrl, envs.DbName).Connect()
+	mongoCli := mongodb.NewClient(envs.MongoUrl, envs.DbName).Connect()
 
-		telegramCli := telegramClient.NewTelegramClient(envs)
-		chatRepository := repository.NewChatRepository(mongoCli)
-		gateway := telegramGateway.NewGateway(telegramCli)
-		messageRepository := &repository.MessageRepository{}
+	telegramCli := telegramClient.NewTelegramClient(envs)
+	chatRepository := repository.NewChatRepository(mongoCli)
+	gateway := telegramGateway.NewGateway(telegramCli)
+	messageRepository := &repository.MessageRepository{}
 
-		chatService := service.NewChatService(chatRepository, gateway, messageRepository)
+	chatService := service.NewChatService(chatRepository, gateway, messageRepository)
 
-		quizProcessor := processors.NewQuizProcessor(chatService, messageRepository)
+	quizProcessor := processors.NewQuizProcessor(chatService, messageRepository)
 
-		useCase := use_case.NewChatUpdateHandler(
-			map[domain.Step]processors.MessageProcessor{
-				domain.Start:           processors.CreateNewChatProcessor(chatService),
-				domain.Faq:             processors.NewFaqProcessor(chatService),
-				domain.MainMenu:        processors.NewMainMenuProcessor(chatService),
-				domain.Tips:            processors.NewTipsProcessor(chatService, messageRepository),
-				domain.Scams:           processors.NewScamProcessor(chatService),
-				domain.QuizExplanation: quizProcessor,
-				domain.Quiz:            quizProcessor,
-				domain.QuizAnswer:      quizProcessor,
-				domain.QuizQuestion:    quizProcessor,
-				domain.QuizFeedback:    quizProcessor,
-			},
-			chatRepository,
-		)
+	useCase := use_case.NewChatUpdateHandler(
+		map[domain.Step]processors.MessageProcessor{
+			domain.Start:           processors.CreateNewChatProcessor(chatService),
+			domain.Faq:             processors.NewFaqProcessor(chatService),
+			domain.MainMenu:        processors.NewMainMenuProcessor(chatService),
+			domain.Tips:            processors.NewTipsProcessor(chatService, messageRepository),
+			domain.Scams:           processors.NewScamProcessor(chatService),
+			domain.QuizExplanation: quizProcessor,
+			domain.Quiz:            quizProcessor,
+			domain.QuizAnswer:      quizProcessor,
+			domain.QuizQuestion:    quizProcessor,
+			domain.QuizFeedback:    quizProcessor,
+		},
+		chatRepository,
+	)
 
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, "erro ao ler body", http.StatusBadRequest)
-			return
-		}
+	lambdaProcessor := boudary.NewLambdaProcessor(useCase)
 
-		var data map[string]interface{}
-		if err := json.Unmarshal(body, &data); err != nil {
-			http.Error(w, "erro ao fazer parse do JSON", http.StatusBadRequest)
-			return
-		}
-		message, _ := data["message"].(string)
+	lambda.Start(lambdaProcessor.Handler)
 
-		chatDto := dto.Chat{
-			ExternalId:     "5470945009",
-			ExternalUserId: "5470945009",
-			SentAt:         time.Now().String(),
-			Message:        message,
-			Origin:         domain.Telegram,
-		}
-
-		_, e := useCase.Run(chatDto)
-
-		if e != nil {
-		}
-
-	})
-
-	fmt.Println("Running bot on port 8080")
-	http.ListenAndServe(":8080", nil)
 }

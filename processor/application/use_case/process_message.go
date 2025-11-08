@@ -2,12 +2,13 @@ package use_case
 
 import (
 	"context"
+	"time"
+
 	"github.com/xvitu/sec-bot/processor/application/use_case/processors"
 	"github.com/xvitu/sec-bot/processor/domain"
 	domainEntity "github.com/xvitu/sec-bot/processor/domain/entity"
 	"github.com/xvitu/sec-bot/processor/entypoint/dto"
 	"github.com/xvitu/sec-bot/processor/infra/persistence/repository"
-	"time"
 )
 
 type ChatUpdateHandler struct {
@@ -22,7 +23,7 @@ func NewChatUpdateHandler(messageProcessors map[domain.Step]processors.MessagePr
 	}
 }
 
-func (u *ChatUpdateHandler) Run(chatUpdate dto.Chat) (*domainEntity.Chat, error) {
+func (u *ChatUpdateHandler) Run(chatUpdate *dto.Chat) (*domainEntity.Chat, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	persistedChat, chatRepoError := u.chatRepository.FindByExternalId(ctx, chatUpdate.ExternalUserId)

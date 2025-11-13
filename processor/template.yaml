@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Lambda consumer de SQS em Go
 
+Globals:
+  Function:
+    Environment:
+      Variables:
+        MONGO_URL: !Sub "{{resolve:ssm-secure:/processor/MONGO_URL}}"
+
 Resources:
   ChatConsumerFunction:
     Type: AWS::Serverless::Function

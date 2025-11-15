@@ -12,19 +12,34 @@ import (
 
 type SqsClient struct{}
 
-func (c *SqsClient) Create() *sqs.Client {
-	ctx := context.TODO()
-	cfg, err := config.LoadDefaultConfig(ctx,
-		config.WithRegion(os.Getenv("AWS_REGION")),
-		config.WithEndpointResolver(aws.EndpointResolverFunc(
-			func(service, region string) (aws.Endpoint, error) {
-				return aws.Endpoint{
-					URL:           os.Getenv("SQS_ENDPOINT"),
-					SigningRegion: region,
-				}, nil
-			}),
-		),
-	)
+func (c *SqsClient) Create(ctx context.Context) *sqs.Client {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	customEndpoint := os.Getenv("SQS_ENDPOINT")
+	region := os.Getenv("AWS_REGION")
+
+	var opts []func(*config.LoadOptions) error
+
+	if customEndpoint != "" {
+		opts = append(opts, config.WithRegion(region))
+		resolver := aws.EndpointResolverWithOptionsFunc(
+			func(service, r string, _ ...interface{}) (aws.Endpoint, error) {
+				if service == sqs.ServiceID {
+					return aws.Endpoint{
+						URL:           customEndpoint,
+						SigningRegion: region,
+					}, nil
+				}
+				return aws.Endpoint{}, &aws.EndpointNotFoundError{}
+			},
+		)
+
+		opts = append(opts, config.WithEndpointResolverWithOptions(resolver))
+	}
+
+	cfg, err := config.LoadDefaultConfig(ctx, opts...)
 	if err != nil {
 		log.Fatalf("erro carregando config: %v", err)
 	}

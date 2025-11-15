@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 	"strconv"
 	"time"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/xvitu/sec-bot/receiver/boundary/request"
@@ -28,21 +28,28 @@ func NewWebhookController(
 	}
 }
 
-func (c *WebHookController) HandleRequest(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-		return
+func (c *WebHookController) HandleRequest(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	token := req.PathParameters["token"]
+
+	if token != os.Getenv("TELEGRAM_WEBHOOK_TOKEN") {
+		return events.APIGatewayV2HTTPResponse{
+			StatusCode: 403,
+			Body:       `{"error":"invalid token"}`,
+		}, nil
 	}
 
-	defer r.Body.Close()
+	body := req.Body
+
 	var update request.ChatUpdateRequest
-	if err := json.NewDecoder(r.Body).Decode(&update); err != nil {
-		http.Error(w, "JSON inválido", http.StatusUnprocessableEntity)
-		return
+	if err := json.Unmarshal([]byte(body), &update); err != nil {
+		fmt.Println("Erro ao fazer unmarshal:", err)
+		return events.APIGatewayV2HTTPResponse{
+			StatusCode: 400,
+			Body:       `{"error":"invalid json"}`,
+		}, nil
 	}
 
 	queue := os.Getenv("UPDATE_CHAT_QUEUE")
-	ctx := context.TODO()
 
 	chatDto := sqs2.Chat{
 		ExternalId:     strconv.FormatInt(update.Message.Chat.Id, 10),
@@ -54,12 +61,18 @@ func (c *WebHookController) HandleRequest(w http.ResponseWriter, r *http.Request
 
 	jsonMessage, _ := json.Marshal(chatDto)
 
-	c.sqsClient.SendMessage(ctx, &sqs.SendMessageInput{
+	out, err := c.sqsClient.SendMessage(ctx, &sqs.SendMessageInput{
 		MessageBody: aws.String(string(jsonMessage)),
 		QueueUrl:    aws.String(queue),
 	})
 
-	fmt.Printf("Mensagem recebida: %s (Chat ID: %d)\n", update.Message.Text, update.Message.Chat.Id)
+	fmt.Println("SendMessage OUT:", out, "ERR:", err)
 
-	w.WriteHeader(http.StatusOK)
+	return events.APIGatewayV2HTTPResponse{
+		StatusCode: 200,
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+		Body: string(jsonMessage),
+	}, nil
 }

@@ -1,0 +1,18 @@
+Resources:
+  Receiver:
+    Type: AWS::Serverless::Function
+    Properties:
+      Environment:
+        Variables:
+          AWS_REGION: "us-east-1"
+          SQS_ENDPOINT: "http://172.17.0.1:4566"
+          UPDATE_CHAT_QUEUE: "http://172.17.0.1:4566/000000000000/chat-updates-queue"
+      CodeUri: .
+      Handler: main
+      Runtime: go1.x
+      Events:
+        GetRoute:
+          Type: Api
+          Properties:
+            Path: /telegram/webhook/{token}
+            Method: POST

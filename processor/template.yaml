@@ -3,6 +3,11 @@ Transform: AWS::Serverless-2016-10-31
 Description: Lambda consumer de SQS em Go
 
 Resources:
+  ChatUpdatesQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: chat-updates-queue
+
   ChatConsumerFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -18,4 +23,5 @@ Resources:
         SQSEvent:
           Type: SQS
           Properties:
-            Queue: arn:aws:sqs:us-east-1:000000000000:chat-updates-queue
+            Queue: !GetAtt ChatUpdatesQueue.Arn
+            BatchSize: 1

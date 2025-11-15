@@ -1,21 +1,56 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Lambda consumer de SQS em Go
+Description: Consumer do chat-updates-queue (processa mensagens vindas do Telegram Receiver)
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: go1.x
+    MemorySize: 128
 
 Resources:
+
   ChatConsumerFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: ChatConsumer
+      CodeUri: .
       Handler: main
       Runtime: go1.x
-      MemorySize: 128
-      Timeout: 30
+
       Environment:
         Variables:
-          LOG_LEVEL: info
+          AWS_REGION: us-east-1
+          MONGO_URL: !Ref MongoUrlParameter
+          TELEGRAM_BOT_TOKEN: !Ref TelegramBotTokenParameter
+          TELEGRAM_CLIENT_TIMEOUT: 3
+          TELEGRAM_URL: https://api.telegram.org
+          DB_NAME: secbot
+
+      Policies:
+        - SQSPollerPolicy:
+            QueueArn: arn:aws:sqs:us-east-1:175036779647:chat-updates-queue
+        - SSMParameterReadPolicy:
+            ParameterName: "/processor/MONGO_URL"
+        - SSMParameterReadPolicy:
+            ParameterName: "/processor/TELEGRAM_BOT_TOKEN"
+
       Events:
         SQSEvent:
           Type: SQS
           Properties:
-            Queue: arn:aws:sqs:us-east-1:000000000000:chat-updates-queue
+            Queue: arn:aws:sqs:us-east-1:175036779647:chat-updates-queue
+            BatchSize: 1
+
+  MongoUrlParameter:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/processor/MONGO_URL"
+
+  TelegramBotTokenParameter:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/processor/TELEGRAM_BOT_TOKEN"
+
+Outputs:
+  ConsumerName:
+    Value: !Ref ChatConsumerFunction
+    Description: Nome da Lambda que consome mensagens da fila

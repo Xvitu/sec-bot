@@ -1,18 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Telegram Webhook Receiver
+
+Globals:
+  Function:
+    Timeout: 5
+    Runtime: go1.x
+    MemorySize: 128
+
+Parameters:
+  TelegramWebhookTokenParameter:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/receiver/TELEGRAM_WEBHOOK_TOKEN"
+
 Resources:
-  Receiver:
+
+  ReceiverFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: TelegramReceiver
+      CodeUri: .
+      Handler: bootstrap
+      Runtime: provided.al2
+
       Environment:
         Variables:
-          AWS_REGION: "us-east-1"
-          SQS_ENDPOINT: "http://172.17.0.1:4566"
-          UPDATE_CHAT_QUEUE: "http://172.17.0.1:4566/000000000000/chat-updates-queue"
-      CodeUri: .
-      Handler: main
-      Runtime: go1.x
+          TELEGRAM_WEBHOOK_TOKEN: !Ref TelegramWebhookTokenParameter
+          UPDATE_CHAT_QUEUE: https://sqs.us-east-1.amazonaws.com/175036779647/chat-updates-queue
+
+      Policies:
+        - SSMParameterReadPolicy:
+            ParameterName: "/receiver/TELEGRAM_WEBHOOK_TOKEN"
+
+        - SQSSendMessagePolicy:
+            QueueName: chat-updates-queue
+
       Events:
-        GetRoute:
+        TelegramWebhook:
           Type: Api
           Properties:
             Path: /telegram/webhook/{token}
             Method: POST
+
+Outputs:
+  QueueArn:
+    Description: ARN da fila SQS utilizada
+    Value: arn:aws:sqs:us-east-1:175036779647:chat-updates-queue
+
+  ApiUrl:
+    Description: Invoke URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"

@@ -2,32 +2,46 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Lambda consumer de SQS em Go
 
-Globals:
-  Function:
-    Environment:
-      Variables:
-        MONGO_URL: !Sub "{{resolve:ssm-secure:/processor/MONGO_URL}}"
+Parameters:
+  MongoUrlParameter:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/processor/MONGO_URL"
+
+  BotTokenParameter:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/processor/TELEGRAM_BOT_TOKEN"
 
 Resources:
-  ChatUpdatesQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: chat-updates-queue
 
   ChatConsumerFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: ChatConsumer
-      Handler: main
-      Runtime: go1.x
+      CodeUri: .
+      Handler: bootstrap
+      Runtime: provided.al2
       MemorySize: 128
       Timeout: 30
+
       Environment:
         Variables:
           LOG_LEVEL: info
+          TELEGRAM_URL: https://api.telegram.org
+          TELEGRAM_BOT_TOKEN: !Ref BotTokenParameter
+          TELEGRAM_CLIENT_TIMEOUT: "5"
+          MONGO_URL: !Ref MongoUrlParameter
+          DB_NAME: secbot
+
       Events:
         SQSEvent:
           Type: SQS
           Properties:
-            Queue: !GetAtt ChatUpdatesQueue.Arn
+            Queue: arn:aws:sqs:us-east-1:175036779647:chat-updates-queue
             BatchSize: 1
+
+      Policies:
+        - SSMParameterReadPolicy:
+            ParameterName: "/processor/*"
+
+        - SQSPollerPolicy:
+            QueueName: chat-updates-queue

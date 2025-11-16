@@ -12,7 +12,7 @@ func main() {
 	_ = godotenv.Load()
 
 	client := sqs.SqsClient{}
-	sqsClient := client.Create()
+	sqsClient := client.Create(nil)
 	webhookController := boundary.NewWebhookController(sqsClient)
 
 	lambda.Start(webhookController.HandleRequest)

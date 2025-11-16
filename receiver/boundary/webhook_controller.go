@@ -28,22 +28,20 @@ func NewWebhookController(
 	}
 }
 
-func (c *WebHookController) HandleRequest(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+func (c *WebHookController) HandleRequest(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResponse, error) {
 	token := req.PathParameters["token"]
 
 	if token != os.Getenv("TELEGRAM_WEBHOOK_TOKEN") {
-		return events.APIGatewayV2HTTPResponse{
+		return events.APIGatewayProxyResponse{
 			StatusCode: 403,
 			Body:       `{"error":"invalid token"}`,
 		}, nil
 	}
 
-	body := req.Body
-
 	var update request.ChatUpdateRequest
-	if err := json.Unmarshal([]byte(body), &update); err != nil {
+	if err := json.Unmarshal([]byte(req.Body), &update); err != nil {
 		fmt.Println("Erro ao fazer unmarshal:", err)
-		return events.APIGatewayV2HTTPResponse{
+		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
 			Body:       `{"error":"invalid json"}`,
 		}, nil
@@ -59,7 +57,14 @@ func (c *WebHookController) HandleRequest(ctx context.Context, req events.APIGat
 		Origin:         domain.TelegramOrigin,
 	}
 
-	jsonMessage, _ := json.Marshal(chatDto)
+	jsonMessage, err := json.Marshal(chatDto)
+	if err != nil {
+		fmt.Println("Erro ao serializar mensagem SQS:", err)
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       `{"error":"internal error"}`,
+		}, nil
+	}
 
 	out, err := c.sqsClient.SendMessage(ctx, &sqs.SendMessageInput{
 		MessageBody: aws.String(string(jsonMessage)),
@@ -67,8 +72,14 @@ func (c *WebHookController) HandleRequest(ctx context.Context, req events.APIGat
 	})
 
 	fmt.Println("SendMessage OUT:", out, "ERR:", err)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       `{"error":"failed to send message to SQS"}`,
+		}, nil
+	}
 
-	return events.APIGatewayV2HTTPResponse{
+	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
 		Headers: map[string]string{
 			"Content-Type": "application/json",

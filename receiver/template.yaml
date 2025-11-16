@@ -26,7 +26,7 @@ Resources:
       Environment:
         Variables:
           TELEGRAM_WEBHOOK_TOKEN: !Ref TelegramWebhookTokenParameter
-          UPDATE_CHAT_QUEUE: arn:aws:sqs:us-east-1:175036779647:chat-updates-queue
+          UPDATE_CHAT_QUEUE: https://sqs.us-east-1.amazonaws.com/175036779647/chat-updates-queue
 
       Policies:
         - SSMParameterReadPolicy:
